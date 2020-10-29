@@ -3,6 +3,7 @@
 use JetBrains\PhpStorm\Pure;
 
 /**
+ * Loads a php extension at runtime
  * @param string $extension_filename <p>
  * This parameter is only the filename of the
  * extension to load which also depends on your platform. For example,
@@ -100,6 +101,7 @@ function utf8_decode ($string) {}
 function error_clear_last () {}
 
 /**
+ * Get process codepage
  * @param string $kind
  * @return int
  * @since 7.1
@@ -107,6 +109,7 @@ function error_clear_last () {}
 function sapi_windows_cp_get($kind) {}
 
 /**
+ * Set process codepage
  * @param int $cp
  * @return bool
  * @since 7.1
@@ -114,6 +117,7 @@ function sapi_windows_cp_get($kind) {}
 function sapi_windows_cp_set($cp) {}
 
 /**
+ * Convert string from one codepage to another
  * @param int|string $in_codepage
  * @param int|string $out_codepage
  * @param string $subject
@@ -123,6 +127,7 @@ function sapi_windows_cp_set($cp) {}
 function sapi_windows_cp_conv($in_codepage, $out_codepage, $subject) {}
 
 /**
+ * Indicates whether the codepage is utf-8 compatible
  * @return bool
  * @since 7.1
  */

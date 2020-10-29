@@ -1678,8 +1678,8 @@ class PDFlib
 
 /**
  * Activates a previously created structure element or other content item.
- * @param $pdf
- * @param $id
+ * @param resource $pdfdoc
+ * @param int $id
  *
  * @return bool
  *
@@ -1688,7 +1688,7 @@ class PDFlib
 function PDF_activate_item($pdf, $id){}
 
 /**
- * Adds a link to a web resource.
+ * Add launch annotation for current page [deprecated].
  * @param resource $pdf
  * @param float $llx
  * @param float $lly
@@ -2027,6 +2027,7 @@ function PDF_begin_pattern($pdf, $width, $height, $xstep, $ystep, $painttype){}
 function PDF_begin_template_ext($pdf, $width, $height, $optlist){}
 
 /**
+ * Start template definition [deprecated]
  * @param resource $pdf
  * @param float $width
  * @param float $height
@@ -2040,6 +2041,7 @@ function PDF_begin_template_ext($pdf, $width, $height, $optlist){}
 function PDF_begin_template($pdf, $width, $height){}
 
 /**
+ * Draw a circle
  * @param resource $pdf
  * @param float $x
  * @param float $y
@@ -2052,6 +2054,7 @@ function PDF_begin_template($pdf, $width, $height){}
 function PDF_circle($pdf, $x, $y, $r){}
 
 /**
+ * Clip to current path
  * @param resource $pdf
  *
  * @return bool
@@ -2061,6 +2064,7 @@ function PDF_circle($pdf, $x, $y, $r){}
 function PDF_clip($pdf){}
 
 /**
+ * Close image
  * @param resource $pdf
  * @param int $image
  *
@@ -2083,6 +2087,7 @@ function PDF_close_image($pdf, $image){}
 function PDF_close_pdi_page($pdf, $page){}
 
 /**
+ * Close the input pdf document [deprecated]
  * @param resource $pdf
  * @param int $doc
  *
@@ -2095,6 +2100,7 @@ function PDF_close_pdi_page($pdf, $page){}
 function PDF_close_pdi($pdf, $doc){}
 
 /**
+ * Close pdf resource [deprecated]
  * @param resource $pdf
  *
  * @return bool
@@ -2106,6 +2112,7 @@ function PDF_close_pdi($pdf, $doc){}
 function PDF_close($pdf){}
 
 /**
+ * Close, fill and stroke current path
  * @param resource $pdf
  *
  * @return bool
@@ -2115,6 +2122,7 @@ function PDF_close($pdf){}
 function PDF_closepath_fill_stroke($pdf){}
 
 /**
+ * Close and stroke path
  * @param resource $pdf
  *
  * @return bool
@@ -2124,6 +2132,7 @@ function PDF_closepath_fill_stroke($pdf){}
 function PDF_closepath_stroke($pdf){}
 
 /**
+ * Close current path
  * @param resource $pdf
  *
  * @return bool
@@ -2133,6 +2142,7 @@ function PDF_closepath_stroke($pdf){}
 function PDF_closepath($pdf){}
 
 /**
+ * Concatenate a matrix to the ctm
  * @param resource $pdf
  * @param float $a
  * @param float $b
@@ -2148,6 +2158,7 @@ function PDF_closepath($pdf){}
 function PDF_concat($pdf, $a, $b, $c, $d, $e, $f){}
 
 /**
+ * Output text in next line
  * @param resource $pdf
  * @param string $text
  *
@@ -2158,6 +2169,7 @@ function PDF_concat($pdf, $a, $b, $c, $d, $e, $f){}
 function PDF_continue_text($pdf, $text){}
 
 /**
+ * Create 3d view
  * @param resource $pdf
  * @param string $username
  * @param string $optlist
@@ -2169,6 +2181,7 @@ function PDF_continue_text($pdf, $text){}
 function PDF_create_3dview($pdf, $username, $optlist){}
 
 /**
+ * Create action for objects or events
  * @param resource $pdf
  * @param string $type
  * @param string $optlist
@@ -2180,6 +2193,7 @@ function PDF_create_3dview($pdf, $username, $optlist){}
 function PDF_create_action($pdf, $type, $optlist){}
 
 /**
+ * Create rectangular annotation
  * @param resource $pdf
  * @param float $llx
  * @param float $lly
@@ -2195,6 +2209,7 @@ function PDF_create_action($pdf, $type, $optlist){}
 function PDF_create_annotation($pdf, $llx, $lly, $urx, $ury, $type, $optlist){}
 
 /**
+ * Create bookmar
  * @param resource $pdf
  * @param string $text
  * @param string $optlist
@@ -2206,6 +2221,7 @@ function PDF_create_annotation($pdf, $llx, $lly, $urx, $ury, $type, $optlist){}
 function PDF_create_bookmark($pdf, $text, $optlist){}
 
 /**
+ * Create form field
  * @param resource $pdf
  * @param float $llx
  * @param float $lly
@@ -2222,6 +2238,7 @@ function PDF_create_bookmark($pdf, $text, $optlist){}
 function PDF_create_field($pdf, $llx, $lly, $urx, $ury, $name, $type, $optlist){}
 
 /**
+ * Create form field group
  * @param resource $pdf
  * @param string $name
  * @param string $optlist
@@ -2233,6 +2250,7 @@ function PDF_create_field($pdf, $llx, $lly, $urx, $ury, $name, $type, $optlist){
 function PDF_create_fieldgroup($pdf, $name, $optlist){}
 
 /**
+ * Create graphics state object
  * @param resource $pdf
  * @param string $optlist
  *
@@ -2243,6 +2261,7 @@ function PDF_create_fieldgroup($pdf, $name, $optlist){}
 function PDF_create_gstate($pdf, $optlist){}
 
 /**
+ * Create pdflib virtual file
  * @param resource $pdf
  * @param string $filename
  * @param string $data
@@ -2255,6 +2274,7 @@ function PDF_create_gstate($pdf, $optlist){}
 function PDF_create_pvf($pdf, $filename, $data, $optlist){}
 
 /**
+ * Create textflow object
  * @param resource $pdf
  * @param string $text
  * @param string $optlist
@@ -2266,6 +2286,7 @@ function PDF_create_pvf($pdf, $filename, $data, $optlist){}
 function PDF_create_textflow($pdf, $text, $optlist){}
 
 /**
+ * Draw bezier curve
  * @param resource $pdf
  * @param float $x1
  * @param float $y1
@@ -2281,6 +2302,7 @@ function PDF_create_textflow($pdf, $text, $optlist){}
 function PDF_curveto($pdf, $x1, $y1, $x2, $y2, $x3, $y3){}
 
 /**
+ * Create layer definition
  * @param resource $pdf
  * @param string $name
  * @param string $optlist
@@ -2292,6 +2314,7 @@ function PDF_curveto($pdf, $x1, $y1, $x2, $y2, $x3, $y3){}
 function PDF_define_layer($pdf, $name, $optlist){}
 
 /**
+ * Delete pdflib virtual file
  * @param resource $pdf
  * @param string $filename
  *

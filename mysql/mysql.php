@@ -4,8 +4,8 @@
 // @deprecated 5.5 entire extension is deprecated in favor of mysqli
 
 /**
- * @deprecated 5.5
  * Open a connection to a MySQL Server
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-connect.php
  * @param string $server [optional] <p>
  * The MySQL server. It can also include a port number. e.g.
@@ -54,8 +54,8 @@
 function mysql_connect ($server = 'ini_get("mysql.default_host")', $username = 'ini_get("mysql.default_user")', $password = 'ini_get("mysql.default_password")', $new_link = false, $client_flags = 0) {}
 
 /**
- * @deprecated 5.5
  * Open a persistent connection to a MySQL server
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-pconnect.php
  * @param string $server [optional] <p>
  * The MySQL server. It can also include a port number. e.g.
@@ -90,8 +90,8 @@ function mysql_connect ($server = 'ini_get("mysql.default_host")', $username = '
 function mysql_pconnect ($server = 'ini_get("mysql.default_host")', $username = 'ini_get("mysql.default_user")', $password = 'ini_get("mysql.default_password")', $client_flags = null) {}
 
 /**
- * @deprecated 5.5
  * Close MySQL connection
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-close.php
  * @param resource $link_identifier [optional]
  * @return bool true on success or false on failure.
@@ -100,8 +100,8 @@ function mysql_pconnect ($server = 'ini_get("mysql.default_host")', $username = 
 function mysql_close ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Select a MySQL database
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-select-db.php
  * @param string $database_name <p>
  * The name of the database that is to be selected.
@@ -113,8 +113,8 @@ function mysql_close ($link_identifier = null) {}
 function mysql_select_db ($database_name, $link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Send a MySQL query
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-query.php
  * @param string $query <p>
  * An SQL query
@@ -155,8 +155,8 @@ function mysql_select_db ($database_name, $link_identifier = null) {}
 function mysql_query ($query, $link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Send an SQL query to MySQL without fetching and buffering the result rows.
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-unbuffered-query.php
  * @param string $query <p>
  * The SQL query to execute.
@@ -232,8 +232,8 @@ function mysql_list_dbs ($link_identifier = null) {}
 function mysql_list_tables ($database, $link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * List MySQL table fields
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-list-fields.php
  * @param string $database_name <p>
  * The name of the database that's being queried.
@@ -255,8 +255,8 @@ function mysql_list_tables ($database, $link_identifier = null) {}
 function mysql_list_fields ($database_name, $table_name, $link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * List MySQL processes
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-list-processes.php
  * @param resource $link_identifier [optional]
  * @return resource|false A result pointer resource on success or false on failure.
@@ -265,8 +265,8 @@ function mysql_list_fields ($database_name, $table_name, $link_identifier = null
 function mysql_list_processes ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Returns the text of the error message from previous MySQL operation
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-error.php
  * @param resource $link_identifier [optional]
  * @return string the error text from the last MySQL function, or
@@ -276,8 +276,8 @@ function mysql_list_processes ($link_identifier = null) {}
 function mysql_error ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Returns the numerical value of the error message from previous MySQL operation
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-errno.php
  * @param resource $link_identifier [optional]
  * @return int the error number from the last MySQL function, or
@@ -287,8 +287,8 @@ function mysql_error ($link_identifier = null) {}
 function mysql_errno ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Get number of affected rows in previous MySQL operation
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-affected-rows.php
  * @param resource $link_identifier [optional]
  * @return int the number of affected rows on success, and -1 if the last query
@@ -315,8 +315,8 @@ function mysql_errno ($link_identifier = null) {}
 function mysql_affected_rows ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Get the ID generated in the last query
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-insert-id.php
  * @param resource $link_identifier [optional]
  * @return int The ID generated for an AUTO_INCREMENT column by the previous
@@ -328,8 +328,8 @@ function mysql_affected_rows ($link_identifier = null) {}
 function mysql_insert_id ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Get result data
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-result.php
  * @param resource $result
  * @param int $row <p>
@@ -362,8 +362,8 @@ function mysql_result ($result, $row, $field = 0) {}
 function mysql_num_rows ($result) {}
 
 /**
- * @deprecated 5.5
  * Get number of fields in result
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-num-fields.php
  * @param resource $result
  * @return int the number of fields in the result set resource on
@@ -373,8 +373,8 @@ function mysql_num_rows ($result) {}
 function mysql_num_fields ($result) {}
 
 /**
- * @deprecated 5.5
  * Get a result row as an enumerated array
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-fetch-row.php
  * @param resource $result
  * @return array an numerical array of strings that corresponds to the fetched row, or
@@ -390,8 +390,8 @@ function mysql_num_fields ($result) {}
 function mysql_fetch_row ($result) {}
 
 /**
- * @deprecated 5.5
  * Fetch a result row as an associative array, a numeric array, or both
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-fetch-array.php
  * @param resource $result
  * @param int $result_type [optional] <p>
@@ -420,8 +420,8 @@ function mysql_fetch_row ($result) {}
 function mysql_fetch_array ($result, $result_type = MYSQL_BOTH) {}
 
 /**
- * @deprecated 5.5
  * Fetch a result row as an associative array
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-fetch-assoc.php
  * @param resource $result
  * @return array an associative array of strings that corresponds to the fetched row, or
@@ -440,8 +440,8 @@ function mysql_fetch_array ($result, $result_type = MYSQL_BOTH) {}
 function mysql_fetch_assoc ($result) {}
 
 /**
- * @deprecated 5.5
  * Fetch a result row as an object
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-fetch-object.php
  * @param resource $result
  * @param string $class_name [optional] <p>
@@ -465,8 +465,8 @@ function mysql_fetch_assoc ($result) {}
 function mysql_fetch_object ($result, $class_name = 'stdClass', array $params = null ) {}
 
 /**
- * @deprecated 5.5
  * Move internal result pointer
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-data-seek.php
  * @param resource $result
  * @param int $row_number <p>
@@ -478,8 +478,8 @@ function mysql_fetch_object ($result, $class_name = 'stdClass', array $params = 
 function mysql_data_seek ($result, $row_number) {}
 
 /**
- * @deprecated 5.5
  * Get the length of each output in a result
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-fetch-lengths.php
  * @param resource $result
  * @return array|false An array of lengths on success or false on failure.
@@ -488,8 +488,8 @@ function mysql_data_seek ($result, $row_number) {}
 function mysql_fetch_lengths ($result) {}
 
 /**
- * @deprecated 5.5
  * Get column information from a result and return as an object
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-fetch-field.php
  * @param resource $result
  * @param int $field_offset [optional] <p>
@@ -519,8 +519,8 @@ function mysql_fetch_lengths ($result) {}
 function mysql_fetch_field ($result, $field_offset = 0) {}
 
 /**
- * @deprecated 5.5
  * Set result pointer to a specified field offset
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-field-seek.php
  * @param resource $result
  * @param int $field_offset
@@ -530,8 +530,8 @@ function mysql_fetch_field ($result, $field_offset = 0) {}
 function mysql_field_seek ($result, $field_offset) {}
 
 /**
- * @deprecated 5.5
  * Free result memory
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-free-result.php
  * @param resource $result
  * @return bool true on success or false on failure.
@@ -546,8 +546,8 @@ function mysql_field_seek ($result, $field_offset) {}
 function mysql_free_result ($result) {}
 
 /**
- * @deprecated 5.5
  * Get the name of the specified field in a result
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-field-name.php
  * @param resource $result
  * @param int $field_offset
@@ -557,8 +557,8 @@ function mysql_free_result ($result) {}
 function mysql_field_name ($result, $field_offset) {}
 
 /**
- * @deprecated 5.5
  * Get name of the table the specified field is in
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-field-table.php
  * @param resource $result
  * @param int $field_offset
@@ -568,8 +568,8 @@ function mysql_field_name ($result, $field_offset) {}
 function mysql_field_table ($result, $field_offset) {}
 
 /**
- * @deprecated 5.5
  * Returns the length of the specified field
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-field-len.php
  * @param resource $result
  * @param int $field_offset
@@ -579,8 +579,8 @@ function mysql_field_table ($result, $field_offset) {}
 function mysql_field_len ($result, $field_offset) {}
 
 /**
- * @deprecated 5.5
  * Get the type of the specified field in a result
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-field-type.php
  * @param resource $result
  * @param int $field_offset
@@ -594,8 +594,8 @@ function mysql_field_len ($result, $field_offset) {}
 function mysql_field_type ($result, $field_offset) {}
 
 /**
- * @deprecated 5.5
  * Get the flags associated with the specified field in a result
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-field-flags.php
  * @param resource $result
  * @param int $field_offset
@@ -626,8 +626,8 @@ function mysql_field_flags ($result, $field_offset) {}
 function mysql_escape_string ($unescaped_string) {}
 
 /**
- * @deprecated 5.5
  * Escapes special characters in a string for use in an SQL statement
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-real-escape-string.php
  * @param string $unescaped_string <p>
  * The string that is to be escaped.
@@ -652,8 +652,8 @@ function mysql_real_escape_string ($unescaped_string, $link_identifier = null) {
 function mysql_stat ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Return the current thread ID
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-thread-id.php
  * @param resource $link_identifier [optional]
  * @return int|false The thread ID on success or false on failure.
@@ -662,8 +662,8 @@ function mysql_stat ($link_identifier = null) {}
 function mysql_thread_id ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Returns the name of the character set
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-client-encoding.php
  * @param resource $link_identifier [optional]
  * @return string the default character set name for the current connection.
@@ -672,8 +672,8 @@ function mysql_thread_id ($link_identifier = null) {}
 function mysql_client_encoding ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Ping a server connection or reconnect if there is no connection
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-ping.php
  * @param resource $link_identifier [optional]
  * @return bool true if the connection to the server MySQL server is working,
@@ -683,8 +683,8 @@ function mysql_client_encoding ($link_identifier = null) {}
 function mysql_ping ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Get MySQL client info
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-get-client-info.php
  * @return string The MySQL client version.
  * @removed 7.0
@@ -692,8 +692,8 @@ function mysql_ping ($link_identifier = null) {}
 function mysql_get_client_info () {}
 
 /**
- * @deprecated 5.5
  * Get MySQL host info
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-get-host-info.php
  * @param resource $link_identifier [optional]
  * @return string a string describing the type of MySQL connection in use for the
@@ -703,8 +703,8 @@ function mysql_get_client_info () {}
 function mysql_get_host_info ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Get MySQL protocol info
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-get-proto-info.php
  * @param resource $link_identifier [optional]
  * @return int|false the MySQL protocol on success or false on failure.
@@ -713,8 +713,8 @@ function mysql_get_host_info ($link_identifier = null) {}
 function mysql_get_proto_info ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Get MySQL server info
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-get-server-info.php
  * @param resource $link_identifier [optional]
  * @return string|false the MySQL server version on success or false on failure.
@@ -723,8 +723,8 @@ function mysql_get_proto_info ($link_identifier = null) {}
 function mysql_get_server_info ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5
  * Get information about the most recent query
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-info.php
  * @param resource $link_identifier [optional]
  * @return string|false information about the statement on success, or false on
@@ -736,8 +736,8 @@ function mysql_get_server_info ($link_identifier = null) {}
 function mysql_info ($link_identifier = null) {}
 
 /**
- * @deprecated 5.5 Use mysqli_set_charset instead.
  * Sets the client character set
+ * @deprecated 5.5 Use {@see mysqli_set_charset} instead.
  * @link https://php.net/manual/en/function.mysql-set-charset.php
  * @param string $charset <p>
  * A valid character set name.
@@ -753,7 +753,7 @@ function mysql_set_charset ($charset, $link_identifier = null) {}
  * @param $database_name
  * @param $query
  * @param $link_identifier [optional]
- * @deprecated 5.3 Use mysql_db_query instead.
+ * @deprecated 5.3 Use {@see mysql_db_query} instead.
  * @removed 7.0
  */
 function mysql ($database_name, $query, $link_identifier) {}
@@ -761,7 +761,7 @@ function mysql ($database_name, $query, $link_identifier) {}
 /**
  * @param $result
  * @param $field_index
- * @deprecated 5.5 Use mysql_field_name instead.
+ * @deprecated 5.5 Use {@see mysql_field_name} instead.
  * @removed 7.0
  */
 function mysql_fieldname ($result, $field_index) {}
@@ -769,7 +769,7 @@ function mysql_fieldname ($result, $field_index) {}
 /**
  * @param $result
  * @param $field_offset
- * @deprecated 5.5 Use mysql_field_table instead.
+ * @deprecated 5.5 Use {@see mysql_field_table} instead.
  * @removed 7.0
  */
 function mysql_fieldtable ($result, $field_offset) {}
@@ -777,7 +777,7 @@ function mysql_fieldtable ($result, $field_offset) {}
 /**
  * @param $result
  * @param $field_offset
- * @deprecated 5.5 Use mysql_field_len instead.
+ * @deprecated 5.5 Use {@see mysql_field_len} instead.
  * @removed 7.0
  */
 function mysql_fieldlen ($result, $field_offset) {}
@@ -785,7 +785,7 @@ function mysql_fieldlen ($result, $field_offset) {}
 /**
  * @param $result
  * @param $field_offset
- * @deprecated 5.5 Use mysql_field_type instead.
+ * @deprecated 5.5 Use {@see mysql_field_type} instead.
  * @removed 7.0
  */
 function mysql_fieldtype ($result, $field_offset) {}
@@ -793,7 +793,7 @@ function mysql_fieldtype ($result, $field_offset) {}
 /**
  * @param $result
  * @param $field_offset
- * @deprecated 5.5 Use mysql_field_flags instead.
+ * @deprecated 5.5 Use {@see mysql_field_flags} instead.
  * @removed 7.0
  */
 function mysql_fieldflags ($result, $field_offset) {}
@@ -801,7 +801,7 @@ function mysql_fieldflags ($result, $field_offset) {}
 /**
  * @param $database_name
  * @param $link_identifier [optional]
- * @deprecated 5.5 Use mysql_select_db instead.
+ * @deprecated 5.5 Use {@see mysql_select_db} instead.
  * @removed 7.0
  */
 function mysql_selectdb ($database_name, $link_identifier) {}
@@ -856,9 +856,7 @@ function mysql_listtables ($database_name, $link_identifier) {}
 function mysql_listfields ($database_name, $table_name, $link_identifier) {}
 
 /**
- * @deprecated 5.5
- * Retrieves database name from the call to <b>mysql_list_dbs</b>
- * @link https://php.net/manual/en/function.mysql-db-name.php
+ * Retrieves database name from the call to {@see mysql_list_dbs}
  * @param resource $result <p>
  * The result pointer from a call to <b>mysql_list_dbs</b>.
  * </p>
@@ -872,6 +870,8 @@ function mysql_listfields ($database_name, $table_name, $link_identifier) {}
  * is returned, use <b>mysql_error</b> to determine the nature
  * of the error.
  * @removed 7.0
+ *@deprecated 5.5
+ * @link https://php.net/manual/en/function.mysql-db-name.php
  */
 function mysql_db_name ($result, $row, $field = null) {}
 
@@ -885,8 +885,8 @@ function mysql_db_name ($result, $row, $field = null) {}
 function mysql_dbname ($result, $row, $field) {}
 
 /**
- * @deprecated 5.5
  * Get table name of field
+ * @deprecated 5.5
  * @link https://php.net/manual/en/function.mysql-tablename.php
  * @param resource $result <p>
  * A result pointer resource that's returned from

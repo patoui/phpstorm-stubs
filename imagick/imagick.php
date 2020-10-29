@@ -4811,7 +4811,7 @@ class ImagickDraw  {
 	public function getTextKerning () {}
 
 	/**
-	 * @param $kerning
+	 * @param float $kerning
 	 */
 	public function setTextKerning ($kerning) {}
 
@@ -6496,10 +6496,13 @@ class ImagickPixel  {
 	 */
 	public function setColorValueQuantum ($color_value) {}
 
+    /**
+     * Gets the colormap index of the pixel wand.
+     */
 	public function getIndex () {}
 
 	/**
-	 * @param $index
+	 * @param int $index
 	 */
 	public function setIndex ($index) {}
 
@@ -6587,7 +6590,6 @@ class ImagickPixel  {
 	public function isSimilar (ImagickPixel $color, $fuzz) {}
 
 	/**
-	 * (No version information available, might only be in SVN)<br/>
 	 * Check the distance between this color and another
 	 * @link https://php.net/manual/en/imagickpixel.ispixelsimilar.php
 	 * @param ImagickPixel $color <p>
@@ -6634,7 +6636,7 @@ class ImagickPixel  {
 	public function getColorCount () {}
 
 	/**
-	 * @param $colorCount
+	 * @param int $colorCount
 	 */
 	public function setColorCount ($colorCount) {}
 

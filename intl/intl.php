@@ -874,9 +874,10 @@ class NumberFormatter {
 
 
     /**
-     * @param $locale
-     * @param $style
-     * @param $pattern [optional]
+     * @link https://www.php.net/manual/en/class.numberformatter.php
+     * @param string $locale
+     * @param int $style
+     * @param string $pattern [optional]
      */
     public function __construct($locale, $style, $pattern = null) { }
 
@@ -1156,7 +1157,7 @@ class Normalizer {
      * Normalizes the input provided and returns the normalized string
      * @link https://php.net/manual/en/normalizer.normalize.php
      * @param string $input <p>The input string to normalize</p>
-     * @param string $form [optional] <p>One of the normalization forms.</p>
+     * @param int $form [optional] <p>One of the normalization forms.</p>
      * @return string|null The normalized string or <b>NULL</b> if an error occurred.
      */
     public static function normalize($input, $form = Normalizer::FORM_C) { }
@@ -1166,7 +1167,7 @@ class Normalizer {
      * Checks if the provided string is already in the specified normalization form.
      * @link https://php.net/manual/en/normalizer.isnormalized.php
      * @param string $input <p>The input string to normalize</p>
-     * @param string $form [optional] <p>
+     * @param int $form [optional] <p>
      * One of the normalization forms.
      * </p>
      * @return bool <b>TRUE</b> if normalized, <b>FALSE</b> otherwise or if there an error
@@ -1986,9 +1987,10 @@ class IntlDateFormatter {
 class ResourceBundle implements IteratorAggregate {
 
     /**
-     * @param $locale
-     * @param $bundlename
-     * @param $fallback [optional]
+     * @link https://www.php.net/manual/en/resourcebundle.create.php
+     * @param string $locale <p>Locale for which the resources should be loaded (locale name, e.g. en_CA).</p>
+     * @param string $bundlename <p>The directory where the data is stored or the name of the .dat file.</p>
+     * @param bool $fallback [optional] <p>Whether locale should match exactly or fallback to parent locale is allowed.</p>
      */
     public function __construct($locale, $bundlename, $fallback) { }
 
@@ -2106,11 +2108,11 @@ class Transliterator {
      * @param string $rules <p>
      * The rules.
      * </p>
-     * @param string $direction [optional] <p>
+     * @param int $direction [optional] <p>
      * The direction, defaults to
-     * >Transliterator::FORWARD.
+     * {@see Transliterator::FORWARD}.
      * May also be set to
-     * Transliterator::REVERSE.
+     * {@see Transliterator::REVERSE}.
      * </p>
      * @return Transliterator|null a <b>Transliterator</b> object on success,
      * or <b>NULL</b> on failure.
@@ -2235,7 +2237,7 @@ class Spoofchecker {
      * (PHP &gt;= 5.4.0, PECL intl &gt;= 2.0.0)<br/>
      * Set the checks to run
      * @link https://php.net/manual/en/spoofchecker.setchecks.php
-     * @param string $checks <p>
+     * @param int $checks <p>
      * </p>
      * @return void
      */
@@ -2905,7 +2907,7 @@ class IntlCalendar {
      * (PHP 5 &gt;=5.5.0 PECL intl &gt;= 3.0.0a1)<br/>
      * Set whether date/time interpretation is to be lenient
      * @link https://secure.php.net/manual/en/intlcalendar.setlenient.php
-     * @param string $isLenient <p>
+     * @param bool $isLenient <p>
      * Use <b>TRUE</b> to activate the lenient mode; <b>FALSE</b> otherwise.
      * </p>
      * @return bool Returns <b>TRUE</b> on success. Failure can only happen due to invalid parameters.
@@ -6599,7 +6601,23 @@ class IntlBreakIterator implements IteratorAggregate
      * (PHP 5 &gt;=5.5.0)<br/>
      * Create iterator for navigating fragments between boundaries
      * @link https://secure.php.net/manual/en/intlbreakiterator.getpartsiterator.php
-     * @param string $key_type [optional]
+     * @param int $key_type [optional]
+     * <p>
+     * Optional key type. Possible values are:
+     * </p><ul>
+     * <li>
+     * {@see IntlPartsIterator::KEY_SEQUENTIAL}
+     * - The default. Sequentially increasing integers used as key.
+     * </li>
+     * <li>
+     * {@see IntlPartsIterator::KEY_LEFT}
+     * - Byte offset left of current part used as key.
+     * </li>
+     * <li>
+     * {@see IntlPartsIterator::KEY_RIGHT}
+     * - Byte offset right of current part used as key.
+     * </li>
+     * </ul>
      */
     public function getPartsIterator($key_type = IntlPartsIterator::KEY_SEQUENTIAL) { }
 
@@ -6614,7 +6632,7 @@ class IntlBreakIterator implements IteratorAggregate
      * (PHP 5 &gt;=5.5.0)<br/>
      * Tell whether an offset is a boundary's offset
      * @link https://secure.php.net/manual/en/intlbreakiterator.isboundary.php
-     * @param string $offset
+     * @param int $offset
      */
     public function isBoundary($offset) { }
 
@@ -6629,7 +6647,7 @@ class IntlBreakIterator implements IteratorAggregate
     /**
      * (PHP 5 &gt;=5.5.0)<br/>
      * @link https://secure.php.net/manual/en/intlbreakiterator.next.php
-     * @param string $offset [optional]
+     * @param int $offset [optional]
      * @return int
      */
     public function next($offset = null) { }

@@ -21,8 +21,8 @@ class SeasClick
     }
 
     /**
-     * @param $sql SQL to execute
-     * @param $parameters key/pair values to replace within the SQL param
+     * @param $sql string SQL to execute
+     * @param $parameters array key/pair values to replace within the SQL param
      * Example: $sql = 'SELECT {select} FROM {table}', $parameters = ['select' => 'string_c, array_c, arraynull_c', 'table' => 'test.array_test']
      * result = 'SELECT string_c, array_c, arraynull_c FROM test.array_test'
      * @return array
@@ -66,8 +66,8 @@ class SeasClick
     }
 
     /**
-     * @param $sql SQL to execute
-     * @param $parameters key/pair values to replace within the SQL param
+     * @param $sql string SQL to execute
+     * @param $parameters array key/pair values to replace within the SQL param
      * Example: $sql = 'DROP TABLE {table}', $parameters = ['table' => 'test.array_test']
      * result = 'DROP TABLE test.array_test'
      * @return bool whether the operation was successful

@@ -27,7 +27,7 @@ class SeasClick
      * result = 'SELECT string_c, array_c, arraynull_c FROM test.array_test'
      * @return array
      */
-    public function select($sql, $parameters)
+    public function select($sql, $parameters = [])
     {
     }
 
@@ -45,7 +45,7 @@ class SeasClick
      * @param array  $columns columns to insert
      * Example: writeStart("test.array_test", ['string_c', 'arraynull_c'])
      */
-    public function writeStart(string $table, array $columns)
+    public function writeStart($table, $columns)
     {
     }
 
@@ -53,7 +53,7 @@ class SeasClick
      * @param array  $values multidimensional array values to insert into columns
      * Example: write([['string_c2', ["string"]]])
      */
-    public function write(array $values)
+    public function write($values)
     {
     }
 
@@ -72,7 +72,7 @@ class SeasClick
      * result = 'DROP TABLE test.array_test'
      * @return bool whether the operation was successful
      */
-    public function execute($sql, $parameters)
+    public function execute($sql, $parameters = [])
     {
     }
 

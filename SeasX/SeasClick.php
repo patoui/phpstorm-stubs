@@ -1,5 +1,4 @@
 <?php
-namespace SeasX;
 
 /**
  * @link https://github.com/SeasX/SeasClick

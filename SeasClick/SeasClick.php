@@ -35,6 +35,7 @@ class SeasClick
      * @param string $table table to insert against
      * @param array  $columns columns to insert
      * @param array  $values values to insert into columns
+     * @return bool whether insert was successful
      */
     public function insert($table, $columns, $values)
     {

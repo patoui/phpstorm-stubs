@@ -8,6 +8,7 @@ namespace PHPSTORM_META {
    * @see map()
    * @see type()
    * @see elementType()
+   * @see sql_injection_subst()
    * @return mixed override pair object
    */
   function override($callable, $override) {
@@ -18,7 +19,12 @@ namespace PHPSTORM_META {
    * map argument with #$argNum Literal value to one of expressions
    * @param mixed $argNum ignored, for now its always 0
    * @param mixed $map Key-value pairs: string_literal|const|class_const => class_name::class|pattern_literal
-   * where pattern literal can contain @ char to be replaced with argument literal value
+   * where pattern literal can contain @ char to be replaced with argument literal value.
+   *
+   * When used with sql_injection_subst(), string literal key-value pairs act as replacement rules: pattern => replacement.
+   * These rules are applied in SQL injections in an IDE and enable support for dynamically-prefixed database table names.
+   *
+   * @see sql_injection_subst()
    * @return mixed overrides map object
    */
   function map($map) {
@@ -43,6 +49,17 @@ namespace PHPSTORM_META {
     return "elementType $argNum";
   }
 
+  /**
+   * Provides an IDE with a set of replacement rules that are applied in SQL injections.
+   * Replacement rules are specified as string literal key-value pairs in the map() call.
+   * @param mixed $argNum ignored, for now its always 0
+   * @see map()
+   * @return mixed
+   */
+  function sql_injection_subst($argNum) {
+      return "sql_injection_subst $argNum";
+  }
+
   override(\array_shift(0), elementType(0));
   override(\array_filter(0), type(0));
   override(\array_reverse(0), type(0));
@@ -57,6 +74,7 @@ namespace PHPSTORM_META {
   override(\array_udiff(0), type(0));
   override(\array_udiff_assoc(0), type(0));
   override(\array_udiff_uassoc(0), type(0));
+  override(\array_merge(0), type(0));
 
   override(\current(0), elementType(0));
   override(\reset(0), elementType(0));
@@ -87,6 +105,9 @@ namespace PHPSTORM_META {
   override(\DOMNode::insertBefore(0), type(0));
   override(\DOMNode::removeChild(0), type(0));
   override(\DOMNode::replaceChild(0), type(1));
+  override(\simplexml_load_file(1), map(["" => "$1"]));
+  override(\simplexml_load_string(1), map(["" => "$1"]));
+  override(\simplexml_import_dom(1), map(["" => "$1"]));
 
     function expectedArguments($functionReference, $argumentIndex, $values) {
         return "expectedArguments " . $functionReference . "at " . $argumentIndex . ": " . $values;
@@ -108,7 +129,7 @@ namespace PHPSTORM_META {
     expectedArguments(\variant_cmp(), 0, NORM_IGNORECASE|NORM_IGNORENONSPACE|NORM_IGNORESYMBOLS|NORM_IGNOREWIDTH|NORM_IGNOREKANATYPE|NORM_IGNOREKASHIDA);
 
     expectedArguments(\DOMDocument::schemaValidateSource(), 1, LIBXML_SCHEMA_CREATE);
-    
+
     expectedArguments(\curl_setopt(), 1, \CURLINFO_HEADER_OUT, \CURLOPT_AUTOREFERER, \CURLOPT_BINARYTRANSFER, \CURLOPT_CERTINFO, \CURLOPT_CONNECT_ONLY, \CURLOPT_COOKIESESSION, \CURLOPT_CRLF, \CURLOPT_DISALLOW_USERNAME_IN_URL, \CURLOPT_DNS_SHUFFLE_ADDRESSES, \CURLOPT_DNS_USE_GLOBAL_CACHE, \CURLOPT_FAILONERROR, \CURLOPT_FILETIME, \CURLOPT_FOLLOWLOCATION, \CURLOPT_FORBID_REUSE, \CURLOPT_FRESH_CONNECT, \CURLOPT_FTPAPPEND, \CURLOPT_FTPASCII, \CURLOPT_FTPLISTONLY, \CURLOPT_FTP_CREATE_MISSING_DIRS, \CURLOPT_FTP_USE_EPRT, \CURLOPT_FTP_USE_EPSV, \CURLOPT_HAPROXYPROTOCOL, \CURLOPT_HEADER, \CURLOPT_HTTP09_ALLOWED, \CURLOPT_HTTPGET, \CURLOPT_HTTPPROXYTUNNEL, \CURLOPT_HTTP_CONTENT_DECODING, \CURLOPT_KEEP_SENDING_ON_ERROR, \CURLOPT_MUTE, \CURLOPT_NETRC, \CURLOPT_NOBODY, \CURLOPT_NOPROGRESS, \CURLOPT_NOSIGNAL, \CURLOPT_PATH_AS_IS, \CURLOPT_PIPEWAIT, \CURLOPT_POST, \CURLOPT_PROXY_SSL_VERIFYPEER, \CURLOPT_PUT, \CURLOPT_RETURNTRANSFER, \CURLOPT_SAFE_UPLOAD, \CURLOPT_SASL_IR, \CURLOPT_SSH_COMPRESSION, \CURLOPT_SSL_ENABLE_ALPN, \CURLOPT_SSL_ENABLE_NPN, \CURLOPT_SSL_FALSESTART, \CURLOPT_SSL_VERIFYPEER, \CURLOPT_SSL_VERIFYSTATUS, \CURLOPT_SUPPRESS_CONNECT_HEADERS, \CURLOPT_TCP_FASTOPEN, \CURLOPT_TCP_NODELAY, \CURLOPT_TFTP_NO_OPTIONS, \CURLOPT_TRANSFERTEXT, \CURLOPT_UNRESTRICTED_AUTH, \CURLOPT_UPLOAD, \CURLOPT_VERBOSE,
         \CURLOPT_BUFFERSIZE, \CURLOPT_CLOSEPOLICY, \CURLOPT_CONNECTTIMEOUT, \CURLOPT_CONNECTTIMEOUT_MS, \CURLOPT_DNS_CACHE_TIMEOUT, \CURLOPT_EXPECT_100_TIMEOUT_MS, \CURLOPT_FTPSSLAUTH, \CURLOPT_FTP_FILEMETHOD, \CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS, \CURLOPT_HEADEROPT, \CURLOPT_HTTPAUTH, \CURLOPT_HTTP_VERSION, \CURLOPT_INFILESIZE, \CURLOPT_IPRESOLVE, \CURLOPT_LOW_SPEED_LIMIT, \CURLOPT_LOW_SPEED_TIME, \CURLOPT_MAXCONNECTS, \CURLOPT_MAXREDIRS, \CURLOPT_MAX_RECV_SPEED_LARGE, \CURLOPT_MAX_SEND_SPEED_LARGE, \CURLOPT_PORT, \CURLOPT_POSTREDIR, \CURLOPT_PROTOCOLS, \CURLOPT_PROXYAUTH, \CURLOPT_PROXYPORT, \CURLOPT_PROXYTYPE, \CURLOPT_PROXY_SSLVERSION, \CURLOPT_PROXY_SSL_OPTIONS, \CURLOPT_PROXY_SSL_VERIFYHOST, \CURLOPT_REDIR_PROTOCOLS, \CURLOPT_RESUME_FROM, \CURLOPT_SOCKS5_AUTH, \CURLOPT_SSH_AUTH_TYPES, \CURLOPT_SSLVERSION, \CURLOPT_SSL_OPTIONS, \CURLOPT_SSL_VERIFYHOST, \CURLOPT_STREAM_WEIGHT, \CURLOPT_TCP_KEEPALIVE, \CURLOPT_TCP_KEEPIDLE, \CURLOPT_TCP_KEEPINTVL, \CURLOPT_TIMECONDITION, \CURLOPT_TIMEOUT, \CURLOPT_TIMEOUT_MS, \CURLOPT_TIMEVALUE, \CURLOPT_TIMEVALUE_LARGE,
         \CURLOPT_ABSTRACT_UNIX_SOCKET, \CURLOPT_CAINFO, \CURLOPT_CAPATH, \CURLOPT_COOKIE, \CURLOPT_COOKIEFILE, \CURLOPT_COOKIEJAR, \CURLOPT_COOKIELIST, \CURLOPT_CUSTOMREQUEST, \CURLOPT_DEFAULT_PROTOCOL, \CURLOPT_DNS_INTERFACE, \CURLOPT_DNS_LOCAL_IP4, \CURLOPT_DNS_LOCAL_IP6, \CURLOPT_EGDSOCKET, \CURLOPT_ENCODING, \CURLOPT_FTPPORT, \CURLOPT_INTERFACE, \CURLOPT_KEYPASSWD, \CURLOPT_KRB4LEVEL, \CURLOPT_LOGIN_OPTIONS, \CURLOPT_PINNEDPUBLICKEY, \CURLOPT_POSTFIELDS, \CURLOPT_PRE_PROXY, \CURLOPT_PRIVATE, \CURLOPT_PROXY, \CURLOPT_PROXYUSERPWD, \CURLOPT_PROXY_CAINFO, \CURLOPT_PROXY_CAPATH, \CURLOPT_PROXY_CRLFILE, \CURLOPT_PROXY_KEYPASSWD, \CURLOPT_PROXY_PINNEDPUBLICKEY, \CURLOPT_PROXY_SERVICE_NAME, \CURLOPT_PROXY_SSLCERT, \CURLOPT_PROXY_SSLCERTTYPE, \CURLOPT_PROXY_SSLKEY, \CURLOPT_PROXY_SSLKEYTYPE, \CURLOPT_PROXY_SSL_CIPHER_LIST, \CURLOPT_PROXY_TLS13_CIPHERS, \CURLOPT_PROXY_TLSAUTH_PASSWORD, \CURLOPT_PROXY_TLSAUTH_TYPE, \CURLOPT_PROXY_TLSAUTH_USERNAME, \CURLOPT_RANDOM_FILE, \CURLOPT_RANGE, \CURLOPT_REFERER, \CURLOPT_SERVICE_NAME, \CURLOPT_SSH_HOST_PUBLIC_KEY_MD5, \CURLOPT_SSH_PRIVATE_KEYFILE, \CURLOPT_SSH_PUBLIC_KEYFILE, \CURLOPT_SSLCERT, \CURLOPT_SSLCERTPASSWD, \CURLOPT_SSLCERTTYPE, \CURLOPT_SSLENGINE, \CURLOPT_SSLENGINE_DEFAULT, \CURLOPT_SSLKEY, \CURLOPT_SSLKEYPASSWD, \CURLOPT_SSLKEYTYPE, \CURLOPT_SSL_CIPHER_LIST, \CURLOPT_TLS13_CIPHERS, \CURLOPT_UNIX_SOCKET_PATH, \CURLOPT_URL, \CURLOPT_USERAGENT, \CURLOPT_USERNAME, \CURLOPT_USERPWD, \CURLOPT_XOAUTH2_BEARER,
@@ -138,11 +159,11 @@ namespace PHPSTORM_META {
     expectedReturnValues(\curl_multi_remove_handle(), argumentsSet('curl_multi_errors'));
     expectedArguments(\curl_share_setopt(), 1, \CURLSHOPT_NONE, \CURLSHOPT_SHARE, \CURLSHOPT_UNSHARE);
     expectedArguments(\curl_share_setopt(), 2, \CURL_LOCK_DATA_COOKIE, \CURL_LOCK_DATA_DNS, \CURL_LOCK_DATA_SSL_SESSION, \CURL_LOCK_DATA_CONNECT, \CURL_LOCK_DATA_PSL);
-    
+
     registerArgumentsSet('common_dirname_return', __DIR__);
     expectedArguments(\dirname(), 0, argumentsSet('common_dirname_return'), __FILE__);
     expectedReturnValues(\dirname(), argumentsSet('common_dirname_return'));    // this allows completion for "dirname()" inside dirname(<caret>)
-    
+
     expectedArguments(\EvLoop::__construct(), 0, \Ev::FLAG_AUTO,\Ev::FLAG_NOENV,\Ev::FLAG_FORKCHECK,\Ev::FLAG_NOINOTIFY,\Ev::FLAG_SIGNALFD,\Ev::FLAG_NOSIGMASK); //todo support
     expectedArguments(\Ev::run(), 0, \Ev::FLAG_AUTO,\Ev::FLAG_NOENV,\Ev::FLAG_FORKCHECK,\Ev::FLAG_NOINOTIFY,\Ev::FLAG_SIGNALFD,\Ev::FLAG_NOSIGMASK);
     expectedArguments(\EvLoop::run(), 0, \Ev::RUN_NOWAIT,\Ev::RUN_ONCE);
@@ -151,7 +172,7 @@ namespace PHPSTORM_META {
     expectedArguments(\EventBase::loop(), 0, \EventBase::LOOP_ONCE, \EventBase::LOOP_NONBLOCK, \EventBase::NOLOCK, \EventBase::STARTUP_IOCP, \EventBase::NO_CACHE_TIME, \EventBase::EPOLL_USE_CHANGELIST);
 
 	expectedArguments(\extension_loaded(), 0, 'amqp', 'apache', 'apc', 'apd', 'bbcode', 'bcmath', 'bcompiler', 'bz2', 'cairo', 'calendar', 'chdb', 'classkit', 'com', 'crack', 'ctype', 'cubrid', 'curl', 'cyrus', 'dba', 'dbase', 'dbplus', 'dbx', 'dio', 'dom', 'dotnet', 'eio', 'enchant', 'ev', 'event', 'exif', 'expect', 'fam', 'fbsql', 'fdf', 'fileinfo', 'filepro', 'filter', 'fribidi', 'ftp', 'gearman', 'gender', 'geoip', 'gettext', 'gmagick', 'gmp', 'gnupg', 'gupnp', 'haru', 'htscanner', 'pecl_http', 'hyperwave', 'hwapi', 'interbase', 'ibm_db2', 'iconv', 'id3', 'informix', 'iisfunc', 'gd', 'imagick', 'imap', 'inclued', 'ingres', 'inotify', 'intl', 'java', 'json', 'judy', 'kadm5', 'ktaglib', 'lapack', 'ldap', 'libevent', 'libxml', 'lua', 'lzf', 'mailparse', 'maxdb', 'mbstring', 'mcrypt', 'mcve', 'memcache', 'memcached', 'memtrack', 'mhash', 'ming', 'mnogosearch', 'mongo', 'mqseries', 'msession', 'msql', 'mssql', 'mysql', 'mysqli', 'mysqlnd', 'mysqlnd_memcache', 'mysqlnd_ms', 'mysqlnd_mux', 'mysqlnd_qc', 'mysqlnd_uh', 'ncurses', 'net_gopher', 'newt', 'notes', 'nsapi', 'oauth', 'oci8', 'oggvorbis', 'openal', 'openssl', 'ovrimos', 'paradox', 'parsekit', 'pcntl', 'pcre', 'pdflib', 'pdo', 'pdo_4d', 'pdo_cubrid', 'pdo_dblib', 'pdo_firebird', 'pdo_ibm', 'pdo_informix', 'pdo_mysql', 'pdo_oci', 'pdo_odbc', 'pdo_pgsql', 'pdo_sqlite', 'pdo_sqlsrv', 'pdo_pgsql', 'phar', 'posix', 'printer', 'proctitle', 'ps', 'pspell', 'pthreads', 'qtdom', 'quickhash', 'radius', 'rar', 'readline', 'recode', 'rpmreader', 'rrd', 'runkit', 'sam', 'sca', 'scream', 'sca_sdo', 'sysvmsg', 'session', 'session_pgsql', 'shmop', 'simplexml', 'snmp', 'soap', 'sockets', 'solr', 'sphinx', 'spl_types', 'spplus', 'sqlite', 'sqlite3', 'sqlsrv', 'ssdeep', 'ssh2', 'stats', 'stomp', 'svm', 'svn', 'swf', 'swish', 'sybase', 'taint', 'tcpwrap', 'tidy', 'tokenizer', 'tokyo_tyrant', 'trader', 'odbc', 'v8js', 'varnish', 'vpopmail', 'w32api', 'wddx', 'weakref', 'win32ps', 'win32service', 'wincache', 'xattr', 'xdiff', 'xhprof', 'xml', 'xmlreader', 'xmlrpc', 'xmlwriter', 'xsl', 'xslt', 'yaf', 'yaml', 'yaz', 'zip', 'zlib');
-    
+
     registerArgumentsSet('error_levels', E_ALL|E_ERROR|E_WARNING|E_PARSE|E_NOTICE|E_STRICT|E_RECOVERABLE_ERROR|E_DEPRECATED|E_CORE_ERROR|E_CORE_WARNING|E_COMPILE_ERROR|E_COMPILE_WARNING|E_USER_ERROR|E_USER_WARNING|E_USER_NOTICE|E_USER_DEPRECATED);
     expectedArguments(\error_reporting(), 0, argumentsSet('error_levels'));
     expectedReturnValues(\error_reporting(), argumentsSet('error_levels'));
@@ -164,21 +185,16 @@ namespace PHPSTORM_META {
     expectedArguments(\ftp_fget(), 3, FTP_ASCII,FTP_BINARY);
     expectedArguments(\ftp_put(), 3, FTP_ASCII,FTP_BINARY);
     expectedArguments(\ftp_fput(), 3, FTP_ASCII,FTP_BINARY);
-    expectedArguments(\ftp_nb_put(), 3, FTP_ASCII,FTP_BINARY);
-    expectedArguments(\ftp_nb_fput(), 3, FTP_ASCII,FTP_BINARY);
 
 	expectedArguments(\fopen(), 1, 'r', 'r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+', 'e');
 	expectedArguments(\popen(), 1, 'r', 'r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+', 'e');
 	expectedArguments(\SplFileInfo::openFile(), 0, 'r', 'r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+', 'e');
 
 	expectedArguments(\htmlentities(), 1, ENT_COMPAT | ENT_QUOTES | ENT_NOQUOTES | ENT_IGNORE | ENT_SUBSTITUTE | ENT_DISALLOWED | ENT_HTML401 | ENT_XML1 | ENT_XHTML | ENT_HTML5);
-	expectedArguments(\htmlentities(), 2, 'ISO-8859-1', 'ISO-8859-5', 'ISO-8859-15', 'UTF-8', 'cp866', 'cp1251', 'cp1252', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'Shift_JIS', 'EUC-JP', 'MacRoman');
 	expectedArguments(\htmlspecialchars(), 1, ENT_COMPAT | ENT_QUOTES | ENT_NOQUOTES | ENT_IGNORE | ENT_SUBSTITUTE | ENT_DISALLOWED | ENT_HTML401 | ENT_XML1 | ENT_XHTML | ENT_HTML5);
-	expectedArguments(\htmlspecialchars(), 2, 'ISO-8859-1', 'ISO-8859-5', 'ISO-8859-15', 'UTF-8', 'cp866', 'cp1251', 'cp1252', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'Shift_JIS', 'EUC-JP', 'MacRoman');
 	expectedArguments(\html_entity_decode(), 1, ENT_COMPAT | ENT_QUOTES | ENT_NOQUOTES | ENT_HTML401 | ENT_XML1 | ENT_XHTML | ENT_HTML5);
-	expectedArguments(\html_entity_decode(), 2, 'ISO-8859-1', 'ISO-8859-5', 'ISO-8859-15', 'UTF-8', 'cp866', 'cp1251', 'cp1252', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'Shift_JIS', 'EUC-JP', 'MacRoman');
     expectedArguments(\htmlspecialchars_decode(), 1, ENT_COMPAT | ENT_QUOTES | ENT_NOQUOTES | ENT_HTML401 | ENT_XML1 | ENT_XHTML | ENT_HTML5);
-	
+
     expectedArguments(\parse_url(), 1, PHP_URL_SCHEME, PHP_URL_HOST, PHP_URL_PORT, PHP_URL_USER, PHP_URL_PASS, PHP_URL_PATH, PHP_URL_QUERY, PHP_URL_FRAGMENT);
 
     expectedArguments(\iconv_mime_decode(), 1, ICONV_MIME_DECODE_STRICT,ICONV_MIME_DECODE_CONTINUE_ON_ERROR);
@@ -209,7 +225,7 @@ namespace PHPSTORM_META {
     expectedArguments(\image_type_to_extension(), 0, argumentsSet('imagetypes'));
     expectedArguments(\image_type_to_mime_type(), 0, argumentsSet('imagetypes'));
     expectedReturnValues(\exif_imagetype(), argumentsSet('imagetypes'));
-    
+
     expectedArguments(\exif_read_data(), 1, 'FILE', 'COMPUTED', 'ANY_TAG', 'IFD0', 'THUMBNAIL', 'COMMENT', 'EXIF');
 
     expectedReturnValues(\expect_expectl(), \EXP_EOF, \EXP_TIMEOUT, \EXP_FULLBUFFER);
@@ -235,8 +251,9 @@ namespace PHPSTORM_META {
     expectedArguments(\mysqli_stmt::attr_set(), 0, argumentsSet("mysqliAttributesSet"));
     expectedArguments(\mysqli_stmt_attr_set(), 1, argumentsSet("mysqliAttributesSet"));
 
-	expectedArguments(\ob_start(), 2, \PHP_OUTPUT_HANDLER_CLEANABLE | \PHP_OUTPUT_HANDLER_FLUSHABLE | PHP_OUTPUT_HANDLER_REMOVABLE, PHP_OUTPUT_HANDLER_STDFLAGS);
+	  expectedArguments(\ob_start(), 2, \PHP_OUTPUT_HANDLER_CLEANABLE | \PHP_OUTPUT_HANDLER_FLUSHABLE | PHP_OUTPUT_HANDLER_REMOVABLE, PHP_OUTPUT_HANDLER_STDFLAGS);
     expectedArguments(\OCI_Lob::flush(), 0, OCI_LOB_BUFFER_FREE);
+    expectedArguments(\OCILob::flush(), 0, OCI_LOB_BUFFER_FREE);
     expectedArguments(\oci_execute(), 1, OCI_COMMIT_ON_SUCCESS,OCI_DESCRIBE_ONLY,OCI_NO_AUTO_COMMIT);
     expectedArguments(\odbc_binmode(), 1, ODBC_BINMODE_PASSTHRU,ODBC_BINMODE_RETURN,ODBC_BINMODE_CONVERT);
     expectedArguments(\openlog(), 1, LOG_CONS|LOG_NDELAY|LOG_ODELAY|LOG_PERROR|LOG_PID);
@@ -250,6 +267,10 @@ namespace PHPSTORM_META {
     expectedArguments(\preg_grep(), 2, PREG_GREP_INVERT);
 
     expectedArguments(\PDO::query(), 1, \PDO::ATTR_FETCH_CATALOG_NAMES,\PDO::ATTR_FETCH_TABLE_NAMES,\PDO::ATTR_DEFAULT_FETCH_MODE,\PDO::ATTR_STRINGIFY_FETCHES);
+    expectedArguments(\PDO::setAttribute(), 0, \PDO::ATTR_CASE,\PDO::ATTR_ERRMODE,\PDO::ATTR_ORACLE_NULLS,\PDO::ATTR_STRINGIFY_FETCHES, \PDO::ATTR_STATEMENT_CLASS, \PDO::ATTR_TIMEOUT, \PDO::ATTR_AUTOCOMMIT, \PDO::ATTR_EMULATE_PREPARES, \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, \PDO::ATTR_DEFAULT_FETCH_MODE);
+    expectedArguments(\PDOStatement::bindColumn(), 2, \PDO::PARAM_NULL|\PDO::PARAM_INT|\PDO::PARAM_STR|\PDO::PARAM_LOB|\PDO::PARAM_STMT|\PDO::PARAM_BOOL|\PDO::PARAM_STR_NATL|\PDO::PARAM_STR_CHAR|\PDO::ATTR_DEFAULT_STR_PARAM|\PDO::PARAM_INPUT_OUTPUT|\PDO::PARAM_EVT_ALLOC|\PDO::PARAM_EVT_FREE|\PDO::PARAM_EVT_EXEC_PRE|\PDO::PARAM_EVT_EXEC_POST|\PDO::PARAM_EVT_FETCH_PRE|\PDO::PARAM_EVT_FETCH_POST|\PDO::PARAM_EVT_NORMALIZE);
+    expectedArguments(\PDOStatement::fetch(), 0, \PDO::FETCH_ASSOC, \PDO::FETCH_BOTH, \PDO::FETCH_BOUND, \PDO::FETCH_CLASS, \PDO::FETCH_INTO, \PDO::FETCH_LAZY, \PDO::FETCH_NAMED, \PDO::FETCH_NUM, \PDO::FETCH_OBJ, \PDO::FETCH_PROPS_LATE);
+    expectedArguments(\PDOStatement::fetch(), 1, \PDO::FETCH_ORI_NEXT, \PDO::FETCH_ORI_PRIOR, \PDO::FETCH_ORI_FIRST, \PDO::FETCH_ORI_LAST, \PDO::FETCH_ORI_ABS, \PDO::FETCH_ORI_REL);
     expectedArguments(\PDOStatement::setFetchMode(), 0, \PDO::ATTR_FETCH_CATALOG_NAMES,\PDO::ATTR_FETCH_TABLE_NAMES,\PDO::ATTR_DEFAULT_FETCH_MODE,\PDO::ATTR_STRINGIFY_FETCHES);
     expectedArguments(\Phar::__construct(), 1, \FilesystemIterator::KEY_AS_PATHNAME|\FilesystemIterator::CURRENT_AS_FILEINFO);
     expectedArguments(\PharData::__construct(), 1, \FilesystemIterator::KEY_AS_PATHNAME|\FilesystemIterator::CURRENT_AS_FILEINFO);
@@ -600,7 +621,7 @@ namespace PHPSTORM_META {
 
     expectedReturnValues(\php_sapi_name(), 'aolserver', 'apache', 'apache2filter', 'apache2handler', 'caudium', 'cgi-fcgi', 'cli', 'cli-server', 'continuity', 'embed', 'fpm-fcgi', 'isapi', 'litespeed', 'milter', 'nsapi', 'phpdbg', 'phttpd', 'pi3web', 'roxen', 'thttpd', 'tux', 'webjames');
     expectedArguments(\phpversion(), 0, 'amqp', 'apache', 'apc', 'apd', 'bbcode', 'bcmath', 'bcompiler', 'bz2', 'cairo', 'calendar', 'chdb', 'classkit', 'com', 'crack', 'ctype', 'cubrid', 'curl', 'cyrus', 'dba', 'dbase', 'dbplus', 'dbx', 'dio', 'dom', 'dotnet', 'eio', 'enchant', 'ev', 'event', 'exif', 'expect', 'fam', 'fbsql', 'fdf', 'fileinfo', 'filepro', 'filter', 'fribidi', 'ftp', 'gearman', 'gender', 'geoip', 'gettext', 'gmagick', 'gmp', 'gnupg', 'gupnp', 'haru', 'htscanner', 'pecl_http', 'hyperwave', 'hwapi', 'interbase', 'ibm_db2', 'iconv', 'id3', 'informix', 'iisfunc', 'gd', 'imagick', 'imap', 'inclued', 'ingres', 'inotify', 'intl', 'java', 'json', 'judy', 'kadm5', 'ktaglib', 'lapack', 'ldap', 'libevent', 'libxml', 'lua', 'lzf', 'mailparse', 'maxdb', 'mbstring', 'mcrypt', 'mcve', 'memcache', 'memcached', 'memtrack', 'mhash', 'ming', 'mnogosearch', 'mongo', 'mqseries', 'msession', 'msql', 'mssql', 'mysql', 'mysqli', 'mysqlnd', 'mysqlnd_memcache', 'mysqlnd_ms', 'mysqlnd_mux', 'mysqlnd_qc', 'mysqlnd_uh', 'ncurses', 'net_gopher', 'newt', 'notes', 'nsapi', 'oauth', 'oci8', 'oggvorbis', 'openal', 'openssl', 'ovrimos', 'paradox', 'parsekit', 'pcntl', 'pcre', 'pdflib', 'pdo', 'pdo_4d', 'pdo_cubrid', 'pdo_dblib', 'pdo_firebird', 'pdo_ibm', 'pdo_informix', 'pdo_mysql', 'pdo_oci', 'pdo_odbc', 'pdo_pgsql', 'pdo_sqlite', 'pdo_sqlsrv', 'pdo_pgsql', 'phar', 'posix', 'printer', 'proctitle', 'ps', 'pspell', 'pthreads', 'qtdom', 'quickhash', 'radius', 'rar', 'readline', 'recode', 'rpmreader', 'rrd', 'runkit', 'sam', 'sca', 'scream', 'sca_sdo', 'sysvmsg', 'session', 'session_pgsql', 'shmop', 'simplexml', 'snmp', 'soap', 'sockets', 'solr', 'sphinx', 'spl_types', 'spplus', 'sqlite', 'sqlite3', 'sqlsrv', 'ssdeep', 'ssh2', 'stats', 'stomp', 'svm', 'svn', 'swf', 'swish', 'sybase', 'taint', 'tcpwrap', 'tidy', 'tokenizer', 'tokyo_tyrant', 'trader', 'odbc', 'v8js', 'varnish', 'vpopmail', 'w32api', 'wddx', 'weakref', 'win32ps', 'win32service', 'wincache', 'xattr', 'xdiff', 'xhprof', 'xml', 'xmlreader', 'xmlrpc', 'xmlwriter', 'xsl', 'xslt', 'yaf', 'yaml', 'yaz', 'zip', 'zlib');
-    
+
     registerArgumentsSet('session_cache_limiters', 'public', 'private_no_expire', 'private', 'nocache');
     expectedArguments(\session_cache_limiter(), 0, argumentsSet('session_cache_limiters'));
     expectedReturnValues(\session_cache_limiter(), argumentsSet('session_cache_limiters'));
@@ -638,6 +659,14 @@ namespace PHPSTORM_META {
         \Attribute::TARGET_FUNCTION |
         \Attribute::TARGET_CLASS_CONSTANT
     );
+
+    registerArgumentsSet('SortFlags', SORT_REGULAR | SORT_NUMERIC | SORT_STRING | SORT_LOCALE_STRING | SORT_NATURAL | SORT_FLAG_CASE);
+    expectedArguments(\sort(), 1, argumentsSet('SortFlags'));
+    expectedArguments(\rsort(), 1, argumentsSet('SortFlags'));
+    expectedArguments(\asort(), 1, argumentsSet('SortFlags'));
+    expectedArguments(\arsort(), 1, argumentsSet('SortFlags'));
+    expectedArguments(\ksort(), 1, argumentsSet('SortFlags'));
+    expectedArguments(\krsort(), 1, argumentsSet('SortFlags'));
 
     /**
      * Use this constant to mark the function with an argument on the specified position as an exit point

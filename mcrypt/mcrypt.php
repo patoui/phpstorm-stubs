@@ -14,7 +14,7 @@ use JetBrains\PhpStorm\Deprecated;
  * @removed 7.0
  */
 #[Deprecated(since: "5.5")]
-function mcrypt_ecb ($cipher, $key, $data, $mode) {}
+function mcrypt_ecb($cipher, $key, $data, $mode) {}
 
 /**
  * Encrypt/decrypt data in CBC mode
@@ -28,7 +28,7 @@ function mcrypt_ecb ($cipher, $key, $data, $mode) {}
  * @removed 7.0
  */
 #[Deprecated(since: "5.5")]
-function mcrypt_cbc ($cipher, $key, $data, $mode, $iv = null) {}
+function mcrypt_cbc($cipher, $key, $data, $mode, $iv = null) {}
 
 /**
  * Encrypt/decrypt data in CFB mode
@@ -42,7 +42,7 @@ function mcrypt_cbc ($cipher, $key, $data, $mode, $iv = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mcrypt_cfb ($cipher, $key, $data, $mode, $iv = null) {}
+function mcrypt_cfb($cipher, $key, $data, $mode, $iv = null) {}
 
 /**
  * Encrypt/decrypt data in OFB mode
@@ -56,17 +56,18 @@ function mcrypt_cfb ($cipher, $key, $data, $mode, $iv = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mcrypt_ofb ($cipher, $key, $data, $mode, $iv = null) {}
+function mcrypt_ofb($cipher, $key, $data, $mode, $iv = null) {}
 
 /**
  * Get the key size of the specified cipher
  * @link https://php.net/manual/en/function.mcrypt-get-key-size.php
  * @param int|string $cipher
- * @param string $mode
+ * @param string $module
  * @return int
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_get_key_size ($cipher, $mode) {}
+function mcrypt_get_key_size($cipher, $module) {}
 
 /**
  * Get the block size of the specified cipher
@@ -75,12 +76,13 @@ function mcrypt_get_key_size ($cipher, $mode) {}
  * One of the MCRYPT_ciphername constants or the name
  * of the algorithm as string.
  * </p>
- * @param string $mode <p>
+ * @param string $module <p>
  * One of the <b>MCRYPT_MODE_modename</b> constants, or one of the following strings: "ecb", "cbc", "cfb", "ofb", "nofb" or "stream".</p>
  * @return int Gets the block size, as an integer.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_get_block_size ($cipher, $mode) {}
+function mcrypt_get_block_size($cipher, $module) {}
 
 /**
  * Get the name of the specified cipher
@@ -91,12 +93,13 @@ function mcrypt_get_block_size ($cipher, $mode) {}
  * </p>
  * @return string|false This function returns the name of the cipher or false, if the cipher does
  * not exist.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_get_cipher_name ($cipher) {}
+function mcrypt_get_cipher_name($cipher) {}
 
 /**
- * Create an initialization vector (IV) from a random source
+ * Creates an initialization vector (IV) from a random source
  * @link https://php.net/manual/en/function.mcrypt-create-iv.php
  * @param int $size <p>
  * Determines the size of the IV, parameter source
@@ -120,35 +123,38 @@ function mcrypt_get_cipher_name ($cipher) {}
  * rand is.
  * </p>
  * @return string|false the initialization vector, or false on error.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_create_iv ($size, $source = MCRYPT_DEV_URANDOM) {}
+function mcrypt_create_iv($size, $source = MCRYPT_DEV_URANDOM) {}
 
 /**
- * Get an array of all supported ciphers
+ * Gets an array of all supported ciphers
  * @link https://php.net/manual/en/function.mcrypt-list-algorithms.php
  * @param string $lib_dir [optional] <p>
  * Specifies the directory where all algorithms are located. If not
- * specifies, the value of the mcrypt.algorithms_dir &php.ini; directive
+ * specifies, the value of the mcrypt.algorithms_dir (php.ini) directive
  * is used.
  * </p>
  * @return array an array with all the supported algorithms.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_list_algorithms ($lib_dir = null) {}
+function mcrypt_list_algorithms($lib_dir = null) {}
 
 /**
- * Get an array of all supported modes
+ * Gets an array of all supported modes
  * @link https://php.net/manual/en/function.mcrypt-list-modes.php
  * @param string $lib_dir [optional] <p>
  * Specifies the directory where all modes are located. If not
  * specifies, the value of the mcrypt.modes_dir
- * &php.ini; directive is used.
+ * (php.ini) directive is used.
  * </p>
  * @return array an array with all the supported modes.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_list_modes ($lib_dir = null) {}
+function mcrypt_list_modes($lib_dir = null) {}
 
 /**
  * Returns the size of the IV belonging to a specific cipher/mode combination
@@ -157,7 +163,7 @@ function mcrypt_list_modes ($lib_dir = null) {}
  * One of the MCRYPT_ciphername constants of the name
  * of the algorithm as string.
  * </p>
- * @param string $mode <p>
+ * @param string $module <p>
  * mode is one of the MCRYPT_MODE_modename constants
  * or one of "ecb", "cbc", "cfb", "ofb", "nofb" or "stream". The IV is
  * ignored in ECB mode as this mode does not require it. You will need to
@@ -167,9 +173,10 @@ function mcrypt_list_modes ($lib_dir = null) {}
  * @return int|false the size of the Initialisation Vector (IV) in bytes. On error the
  * function returns false. If the IV is ignored in the specified cipher/mode
  * combination zero is returned.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_get_iv_size ($cipher, $mode) {}
+function mcrypt_get_iv_size($cipher, $module) {}
 
 /**
  * Encrypts plaintext with given parameters
@@ -208,9 +215,10 @@ function mcrypt_get_iv_size ($cipher, $mode) {}
  * IV with all bytes set to '\0'.
  * </p>
  * @return string the encrypted data, as a string.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_encrypt ($cipher, $key, $data, $mode, $iv = null) {}
+function mcrypt_encrypt($cipher, $key, $data, $mode, $iv = null) {}
 
 /**
  * Decrypts crypttext with given parameters
@@ -241,17 +249,18 @@ function mcrypt_encrypt ($cipher, $key, $data, $mode, $iv = null) {}
  * '\0'.
  * </p>
  * @return string the decrypted data as a string.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_decrypt ($cipher, $key, $data, $mode, $iv = null) {}
+function mcrypt_decrypt($cipher, $key, $data, $mode, $iv = null) {}
 
 /**
  * Opens the module of the algorithm and the mode to be used
  * @link https://php.net/manual/en/function.mcrypt-module-open.php
- * @param string $algorithm <p>
+ * @param string $cipher <p>
  * The algorithm to be used.
  * </p>
- * @param string $algorithm_directory <p>
+ * @param string $cipher_directory <p>
  * The algorithm_directory and
  * mode_directory are used to locate the encryption
  * modules. When you supply a directory name, it is used. When you set one
@@ -268,9 +277,10 @@ function mcrypt_decrypt ($cipher, $key, $data, $mode, $iv = null) {}
  * @param string $mode_directory <p>
  * </p>
  * @return resource|false Normally it returns an encryption descriptor, or false on error.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_open ($algorithm, $algorithm_directory, $mode, $mode_directory) {}
+function mcrypt_module_open($cipher, $cipher_directory, $mode, $mode_directory) {}
 
 /**
  * This function initializes all buffers needed for encryption
@@ -297,9 +307,10 @@ function mcrypt_module_open ($algorithm, $algorithm_directory, $mode, $mode_dire
  * other return value is an unknown error. If an error occurs a warning will
  * be displayed accordingly. false is returned if incorrect parameters
  * were passed.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_generic_init ($td, $key, $iv) {}
+function mcrypt_generic_init($td, $key, $iv) {}
 
 /**
  * This function encrypts data
@@ -318,12 +329,13 @@ function mcrypt_generic_init ($td, $key, $iv) {}
  * The data to encrypt.
  * </p>
  * @return string the encrypted data.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_generic ($td, $data) {}
+function mcrypt_generic($td, $data) {}
 
 /**
- * Decrypt data
+ * Decrypts data
  * @link https://php.net/manual/en/function.mdecrypt-generic.php
  * @param resource $td <p>
  * An encryption descriptor returned by
@@ -333,9 +345,10 @@ function mcrypt_generic ($td, $data) {}
  * Encrypted data.
  * </p>
  * @return string
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mdecrypt_generic ($td, $data) {}
+function mdecrypt_generic($td, $data) {}
 
 /**
  * This function terminates encryption
@@ -344,8 +357,8 @@ function mdecrypt_generic ($td, $data) {}
  * @return bool
  * @removed 7.0
  */
-#[Deprecated(since: '5.4')]
-function mcrypt_generic_end ($td) {}
+#[Deprecated(since: '5.3')]
+function mcrypt_generic_end($td) {}
 
 /**
  * This function deinitializes an encryption module
@@ -354,9 +367,10 @@ function mcrypt_generic_end ($td) {}
  * The encryption descriptor.
  * </p>
  * @return bool true on success or false on failure.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_generic_deinit ($td) {}
+function mcrypt_generic_deinit($td) {}
 
 /**
  * Runs a self test on the opened module
@@ -365,9 +379,10 @@ function mcrypt_generic_deinit ($td) {}
  * The encryption descriptor.
  * </p>
  * @return int Returns 0 on success and a negative integer on failure
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_self_test ($td) {}
+function mcrypt_enc_self_test($td) {}
 
 /**
  * Checks whether the encryption of the opened mode works on blocks
@@ -377,9 +392,10 @@ function mcrypt_enc_self_test ($td) {}
  * </p>
  * @return bool true if the mode is for use with block algorithms, otherwise it
  * returns false.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_is_block_algorithm_mode ($td) {}
+function mcrypt_enc_is_block_algorithm_mode($td) {}
 
 /**
  * Checks whether the algorithm of the opened mode is a block algorithm
@@ -389,9 +405,10 @@ function mcrypt_enc_is_block_algorithm_mode ($td) {}
  * </p>
  * @return bool true if the algorithm is a block algorithm or false if it is
  * a stream one.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_is_block_algorithm ($td) {}
+function mcrypt_enc_is_block_algorithm($td) {}
 
 /**
  * Checks whether the opened mode outputs blocks
@@ -400,9 +417,10 @@ function mcrypt_enc_is_block_algorithm ($td) {}
  * The encryption descriptor.
  * </p>
  * @return bool true if the mode outputs blocks of bytes or false if it outputs bytes.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_is_block_mode ($td) {}
+function mcrypt_enc_is_block_mode($td) {}
 
 /**
  * Returns the blocksize of the opened algorithm
@@ -411,9 +429,10 @@ function mcrypt_enc_is_block_mode ($td) {}
  * The encryption descriptor.
  * </p>
  * @return int the block size of the specified algorithm in bytes.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_get_block_size ($td) {}
+function mcrypt_enc_get_block_size($td) {}
 
 /**
  * Returns the maximum supported keysize of the opened mode
@@ -422,9 +441,10 @@ function mcrypt_enc_get_block_size ($td) {}
  * The encryption descriptor.
  * </p>
  * @return int the maximum supported key size of the algorithm in bytes.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_get_key_size ($td) {}
+function mcrypt_enc_get_key_size($td) {}
 
 /**
  * Returns an array with the supported keysizes of the opened algorithm
@@ -437,9 +457,10 @@ function mcrypt_enc_get_key_size ($td) {}
  * array then all key sizes between 1 and
  * mcrypt_enc_get_key_size are supported by the
  * algorithm.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_get_supported_key_sizes ($td) {}
+function mcrypt_enc_get_supported_key_sizes($td) {}
 
 /**
  * Returns the size of the IV of the opened algorithm
@@ -448,9 +469,10 @@ function mcrypt_enc_get_supported_key_sizes ($td) {}
  * The encryption descriptor.
  * </p>
  * @return int the size of the IV, or 0 if the IV is ignored in the algorithm.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_get_iv_size ($td) {}
+function mcrypt_enc_get_iv_size($td) {}
 
 /**
  * Returns the name of the opened algorithm
@@ -459,9 +481,10 @@ function mcrypt_enc_get_iv_size ($td) {}
  * The encryption descriptor.
  * </p>
  * @return string the name of the opened algorithm as a string.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_get_algorithms_name ($td) {}
+function mcrypt_enc_get_algorithms_name($td) {}
 
 /**
  * Returns the name of the opened mode
@@ -470,9 +493,10 @@ function mcrypt_enc_get_algorithms_name ($td) {}
  * The encryption descriptor.
  * </p>
  * @return string the name as a string.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_enc_get_modes_name ($td) {}
+function mcrypt_enc_get_modes_name($td) {}
 
 /**
  * This function runs a self test on the specified module
@@ -486,9 +510,10 @@ function mcrypt_enc_get_modes_name ($td) {}
  * </p>
  * @return bool The function returns true if the self test succeeds, or false when if
  * fails.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_self_test ($algorithm, $lib_dir = null) {}
+function mcrypt_module_self_test($algorithm, $lib_dir = null) {}
 
 /**
  * Returns if the specified module is a block algorithm or not
@@ -503,9 +528,10 @@ function mcrypt_module_self_test ($algorithm, $lib_dir = null) {}
  * @return bool This function returns true if the mode is for use with block
  * algorithms, otherwise it returns false. (e.g. false for stream, and
  * true for cbc, cfb, ofb).
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_is_block_algorithm_mode ($mode, $lib_dir = null) {}
+function mcrypt_module_is_block_algorithm_mode($mode, $lib_dir = null) {}
 
 /**
  * This function checks whether the specified algorithm is a block algorithm
@@ -519,9 +545,10 @@ function mcrypt_module_is_block_algorithm_mode ($mode, $lib_dir = null) {}
  * </p>
  * @return bool This function returns true if the specified algorithm is a block
  * algorithm, or false is it is a stream algorithm.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_is_block_algorithm ($algorithm, $lib_dir = null) {}
+function mcrypt_module_is_block_algorithm($algorithm, $lib_dir = null) {}
 
 /**
  * Returns if the specified mode outputs blocks or not
@@ -536,9 +563,10 @@ function mcrypt_module_is_block_algorithm ($algorithm, $lib_dir = null) {}
  * @return bool This function returns true if the mode outputs blocks of bytes or
  * false if it outputs just bytes. (e.g. true for cbc and ecb, and
  * false for cfb and stream).
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_is_block_mode ($mode, $lib_dir = null) {}
+function mcrypt_module_is_block_mode($mode, $lib_dir = null) {}
 
 /**
  * Returns the blocksize of the specified algorithm
@@ -551,9 +579,10 @@ function mcrypt_module_is_block_mode ($mode, $lib_dir = null) {}
  * is on the system.
  * </p>
  * @return int the block size of the algorithm specified in bytes.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_get_algo_block_size ($algorithm, $lib_dir = null) {}
+function mcrypt_module_get_algo_block_size($algorithm, $lib_dir = null) {}
 
 /**
  * Returns the maximum supported keysize of the opened mode
@@ -567,9 +596,10 @@ function mcrypt_module_get_algo_block_size ($algorithm, $lib_dir = null) {}
  * </p>
  * @return int This function returns the maximum supported key size of the
  * algorithm specified in bytes.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_get_algo_key_size ($algorithm, $lib_dir = null) {}
+function mcrypt_module_get_algo_key_size($algorithm, $lib_dir = null) {}
 
 /**
  * Returns an array with the supported keysizes of the opened algorithm
@@ -585,62 +615,263 @@ function mcrypt_module_get_algo_key_size ($algorithm, $lib_dir = null) {}
  * If it returns an empty array then all key sizes between 1 and
  * mcrypt_module_get_algo_key_size are supported by the
  * algorithm.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_get_supported_key_sizes ($algorithm, $lib_dir = null) {}
+function mcrypt_module_get_supported_key_sizes($algorithm, $lib_dir = null) {}
 
 /**
- * Close the mcrypt module
+ * Closes the mcrypt module
  * @link https://php.net/manual/en/function.mcrypt-module-close.php
  * @param resource $td <p>
  * The encryption descriptor.
  * </p>
  * @return bool true on success or false on failure.
+ * @removed 7.2
  */
 #[Deprecated(since: '7.1')]
-function mcrypt_module_close ($td) {}
+function mcrypt_module_close($td) {}
 
-define ('MCRYPT_ENCRYPT', 0);
-define ('MCRYPT_DECRYPT', 1);
-define ('MCRYPT_DEV_RANDOM', 0);
-define ('MCRYPT_DEV_URANDOM', 1);
-define ('MCRYPT_RAND', 2);
-define ('MCRYPT_3DES', "tripledes");
-define ('MCRYPT_ARCFOUR_IV', "arcfour-iv");
-define ('MCRYPT_ARCFOUR', "arcfour");
-define ('MCRYPT_BLOWFISH', "blowfish");
-define ('MCRYPT_BLOWFISH_COMPAT', "blowfish-compat");
-define ('MCRYPT_CAST_128', "cast-128");
-define ('MCRYPT_CAST_256', "cast-256");
-define ('MCRYPT_CRYPT', "crypt");
-define ('MCRYPT_DES', "des");
-define ('MCRYPT_ENIGNA', "crypt");
-define ('MCRYPT_GOST', "gost");
-define ('MCRYPT_LOKI97', "loki97");
-define ('MCRYPT_PANAMA', "panama");
-define ('MCRYPT_RC2', "rc2");
-define ('MCRYPT_RIJNDAEL_128', "rijndael-128");
-define ('MCRYPT_RIJNDAEL_192', "rijndael-192");
-define ('MCRYPT_RIJNDAEL_256', "rijndael-256");
-define ('MCRYPT_SAFER64', "safer-sk64");
-define ('MCRYPT_SAFER128', "safer-sk128");
-define ('MCRYPT_SAFERPLUS', "saferplus");
-define ('MCRYPT_SERPENT', "serpent");
-define ('MCRYPT_THREEWAY', "threeway");
-define ('MCRYPT_TRIPLEDES', "tripledes");
-define ('MCRYPT_TWOFISH', "twofish");
-define ('MCRYPT_WAKE', "wake");
-define ('MCRYPT_XTEA', "xtea");
-define ('MCRYPT_IDEA', "idea");
-define ('MCRYPT_MARS', "mars");
-define ('MCRYPT_RC6', "rc6");
-define ('MCRYPT_SKIPJACK', "skipjack");
-define ('MCRYPT_MODE_CBC', "cbc");
-define ('MCRYPT_MODE_CFB', "cfb");
-define ('MCRYPT_MODE_ECB', "ecb");
-define ('MCRYPT_MODE_NOFB', "nofb");
-define ('MCRYPT_MODE_OFB', "ofb");
-define ('MCRYPT_MODE_STREAM', "stream");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_ENCRYPT', 0);
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_DECRYPT', 1);
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_DEV_RANDOM', 0);
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_DEV_URANDOM', 1);
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RAND', 2);
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_3DES', "tripledes");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_ARCFOUR_IV', "arcfour-iv");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_ARCFOUR', "arcfour");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_BLOWFISH', "blowfish");
+define('MCRYPT_BLOWFISH_COMPAT', "blowfish-compat");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_CAST_128', "cast-128");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_CAST_256', "cast-256");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_CRYPT', "crypt");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_DES', "des");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_DES_COMPAT', "des-compat");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_ENIGNA', "crypt");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_GOST', "gost");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_LOKI97', "loki97");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_PANAMA', "panama");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RC2', "rc2");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RC4', "rc4");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RIJNDAEL_128', "rijndael-128");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RIJNDAEL_192', "rijndael-192");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RIJNDAEL_256', "rijndael-256");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_SAFER64', "safer-sk64");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_SAFER128', "safer-sk128");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_SAFERPLUS', "saferplus");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_SERPENT', "serpent");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_SERPENT_128', "serpent-128");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_SERPENT_192', "serpent-192");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_SERPENT_256', "serpent-256");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_THREEWAY', "threeway");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_TRIPLEDES', "tripledes");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_TWOFISH', "twofish");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_WAKE', "wake");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_XTEA', "xtea");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_IDEA', "idea");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_MARS', "mars");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RC6', "rc6");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RC6_128', "rc6-128");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RC6_192', "rc6-192");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_RC6_256', "rc6-256");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_SKIPJACK', "skipjack");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_MODE_CBC', "cbc");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_MODE_CFB', "cfb");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_MODE_ECB', "ecb");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_MODE_NOFB', "nofb");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_MODE_OFB', "ofb");
+/**
+ * @deprecated 7.1
+ * @removed 7.2
+ */
+define('MCRYPT_MODE_STREAM', "stream");
 
 // End of mcrypt v.
-?>

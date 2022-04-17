@@ -15,17 +15,17 @@ use JetBrains\PhpStorm\Deprecated;
  * <p>
  * If the PHP directive
  * mysql.default_host is undefined (default), then the default
- * value is 'localhost:3306'. In &sqlsafemode;, this parameter is ignored
+ * value is 'localhost:3306'. In "ini.sql.safe-mode", this parameter is ignored
  * and value 'localhost:3306' is always used.
  * </p>
  * @param string $username [optional] <p>
  * The username. Default value is defined by mysql.default_user. In
- * &sqlsafemode;, this parameter is ignored and the name of the user that
+ * "ini.sql.safe-mode", this parameter is ignored and the name of the user that
  * owns the server process is used.
  * </p>
  * @param string $password [optional] <p>
  * The password. Default value is defined by mysql.default_password. In
- * &sqlsafemode;, this parameter is ignored and empty password is used.
+ * "ini.sql.safe-mode", this parameter is ignored and empty password is used.
  * </p>
  * @param bool $new_link [optional] <p>
  * If a second call is made to <b>mysql_connect</b>
@@ -35,7 +35,7 @@ use JetBrains\PhpStorm\Deprecated;
  * behavior and makes <b>mysql_connect</b> always open
  * a new link, even if <b>mysql_connect</b> was called
  * before with the same parameters.
- * In &sqlsafemode;, this parameter is ignored.
+ * In "ini.sql.safe-mode", this parameter is ignored.
  * </p>
  * @param int $client_flags [optional] <p>
  * The <i>client_flags</i> parameter can be a combination
@@ -46,13 +46,13 @@ use JetBrains\PhpStorm\Deprecated;
  * <b>MYSQL_CLIENT_IGNORE_SPACE</b> or
  * <b>MYSQL_CLIENT_INTERACTIVE</b>.
  * Read the section about for further information.
- * In &sqlsafemode;, this parameter is ignored.
+ * In "ini.sql.safe-mode", this parameter is ignored.
  * </p>
  * @return resource|false a MySQL link identifier on success or false on failure.
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_connect ($server = 'ini_get("mysql.default_host")', $username = 'ini_get("mysql.default_user")', $password = 'ini_get("mysql.default_password")', $new_link = false, $client_flags = 0) {}
+function mysql_connect($server = 'ini_get("mysql.default_host")', $username = 'ini_get("mysql.default_user")', $password = 'ini_get("mysql.default_password")', $new_link = false, $client_flags = 0) {}
 
 /**
  * Open a persistent connection to a MySQL server
@@ -88,7 +88,7 @@ function mysql_connect ($server = 'ini_get("mysql.default_host")', $username = '
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_pconnect ($server = 'ini_get("mysql.default_host")', $username = 'ini_get("mysql.default_user")', $password = 'ini_get("mysql.default_password")', $client_flags = null) {}
+function mysql_pconnect($server = 'ini_get("mysql.default_host")', $username = 'ini_get("mysql.default_user")', $password = 'ini_get("mysql.default_password")', $client_flags = null) {}
 
 /**
  * Close MySQL connection
@@ -98,7 +98,7 @@ function mysql_pconnect ($server = 'ini_get("mysql.default_host")', $username = 
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_close ($link_identifier = null) {}
+function mysql_close($link_identifier = null) {}
 
 /**
  * Select a MySQL database
@@ -111,7 +111,7 @@ function mysql_close ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_select_db ($database_name, $link_identifier = null) {}
+function mysql_select_db($database_name, $link_identifier = null) {}
 
 /**
  * Send a MySQL query
@@ -153,9 +153,10 @@ function mysql_select_db ($database_name, $link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_query ($query, $link_identifier = null) {}
+function mysql_query($query, $link_identifier = null) {}
 
 /**
+ * @deprecated 5.5
  * Send an SQL query to MySQL without fetching and buffering the result rows.
  * @link https://php.net/manual/en/function.mysql-unbuffered-query.php
  * @param string $query <p>
@@ -177,7 +178,7 @@ function mysql_query ($query, $link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_unbuffered_query ($query, $link_identifier = null) {}
+function mysql_unbuffered_query($query, $link_identifier = null) {}
 
 /**
  * Selects a database and executes a query on it
@@ -201,7 +202,7 @@ function mysql_unbuffered_query ($query, $link_identifier = null) {}
  * @see mysql_query()
  */
 #[Deprecated('Use mysql_select_db() and mysql_query() instead', since: '5.3')]
-function mysql_db_query ($database, $query, $link_identifier = null) {}
+function mysql_db_query($database, $query, $link_identifier = null) {}
 
 /**
  * List databases available on a MySQL server
@@ -214,7 +215,7 @@ function mysql_db_query ($database, $query, $link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.4')]
-function mysql_list_dbs ($link_identifier = null) {}
+function mysql_list_dbs($link_identifier = null) {}
 
 /**
  * List tables in a MySQL database
@@ -224,15 +225,15 @@ function mysql_list_dbs ($link_identifier = null) {}
  * </p>
  * @param resource $link_identifier [optional]
  * @return resource|false A result pointer resource on success or false on failure.
- * </p>
  * <p>
  * Use the <b>mysql_tablename</b> function to
  * traverse this result pointer, or any function for result tables,
  * such as <b>mysql_fetch_array</b>.
+ * </p>
  * @removed 7.0
  */
 #[Deprecated(since: '5.3')]
-function mysql_list_tables ($database, $link_identifier = null) {}
+function mysql_list_tables($database, $link_identifier = null) {}
 
 /**
  * List MySQL table fields
@@ -250,12 +251,12 @@ function mysql_list_tables ($database, $link_identifier = null) {}
  * <p>
  * The returned result can be used with <b>mysql_field_flags</b>,
  * <b>mysql_field_len</b>,
- * <b>mysql_field_name</b>&listendand;
+ * <b>mysql_field_name</b>
  * <b>mysql_field_type</b>.
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_list_fields ($database_name, $table_name, $link_identifier = null) {}
+function mysql_list_fields($database_name, $table_name, $link_identifier = null) {}
 
 /**
  * List MySQL processes
@@ -265,7 +266,7 @@ function mysql_list_fields ($database_name, $table_name, $link_identifier = null
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_list_processes ($link_identifier = null) {}
+function mysql_list_processes($link_identifier = null) {}
 
 /**
  * Returns the text of the error message from previous MySQL operation
@@ -276,7 +277,7 @@ function mysql_list_processes ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_error ($link_identifier = null) {}
+function mysql_error($link_identifier = null) {}
 
 /**
  * Returns the numerical value of the error message from previous MySQL operation
@@ -287,7 +288,7 @@ function mysql_error ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_errno ($link_identifier = null) {}
+function mysql_errno($link_identifier = null) {}
 
 /**
  * Get number of affected rows in previous MySQL operation
@@ -315,7 +316,7 @@ function mysql_errno ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_affected_rows ($link_identifier = null) {}
+function mysql_affected_rows($link_identifier = null) {}
 
 /**
  * Get the ID generated in the last query
@@ -328,7 +329,7 @@ function mysql_affected_rows ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_insert_id ($link_identifier = null) {}
+function mysql_insert_id($link_identifier = null) {}
 
 /**
  * Get result data
@@ -352,7 +353,7 @@ function mysql_insert_id ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_result ($result, $row, $field = 0) {}
+function mysql_result($result, $row, $field = 0) {}
 
 /**
  * Get number of rows in result
@@ -362,7 +363,7 @@ function mysql_result ($result, $row, $field = 0) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_num_rows ($result) {}
+function mysql_num_rows($result) {}
 
 /**
  * Get number of fields in result
@@ -373,7 +374,7 @@ function mysql_num_rows ($result) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_num_fields ($result) {}
+function mysql_num_fields($result) {}
 
 /**
  * Get a result row as an enumerated array
@@ -390,7 +391,7 @@ function mysql_num_fields ($result) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_fetch_row ($result) {}
+function mysql_fetch_row($result) {}
 
 /**
  * Fetch a result row as an associative array, a numeric array, or both
@@ -420,7 +421,7 @@ function mysql_fetch_row ($result) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_fetch_array ($result, $result_type = MYSQL_BOTH) {}
+function mysql_fetch_array($result, $result_type = MYSQL_BOTH) {}
 
 /**
  * Fetch a result row as an associative array
@@ -440,13 +441,15 @@ function mysql_fetch_array ($result, $result_type = MYSQL_BOTH) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_fetch_assoc ($result) {}
+function mysql_fetch_assoc($result) {}
 
 /**
+ * @template T
+ *
  * Fetch a result row as an object
  * @link https://php.net/manual/en/function.mysql-fetch-object.php
  * @param resource $result
- * @param string $class_name [optional] <p>
+ * @param class-string<T> $class_name [optional] <p>
  * The name of the class to instantiate, set the properties of and return.
  * If not specified, a <b>stdClass</b> object is returned.
  * </p>
@@ -454,7 +457,7 @@ function mysql_fetch_assoc ($result) {}
  * An optional array of parameters to pass to the constructor
  * for <i>class_name</i> objects.
  * </p>
- * @return stdClass|object an object with string properties that correspond to the
+ * @return T|stdClass an object with string properties that correspond to the
  * fetched row, or false if there are no more rows.
  * </p>
  * <p>
@@ -465,7 +468,7 @@ function mysql_fetch_assoc ($result) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_fetch_object ($result, $class_name = 'stdClass', array $params = null ) {}
+function mysql_fetch_object($result, $class_name = 'stdClass', array $params = null) {}
 
 /**
  * Move internal result pointer
@@ -478,7 +481,7 @@ function mysql_fetch_object ($result, $class_name = 'stdClass', array $params = 
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_data_seek ($result, $row_number) {}
+function mysql_data_seek($result, $row_number) {}
 
 /**
  * Get the length of each output in a result
@@ -488,7 +491,7 @@ function mysql_data_seek ($result, $row_number) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_fetch_lengths ($result) {}
+function mysql_fetch_lengths($result) {}
 
 /**
  * Get column information from a result and return as an object
@@ -519,7 +522,7 @@ function mysql_fetch_lengths ($result) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_fetch_field ($result, $field_offset = 0) {}
+function mysql_fetch_field($result, $field_offset = 0) {}
 
 /**
  * Set result pointer to a specified field offset
@@ -530,23 +533,23 @@ function mysql_fetch_field ($result, $field_offset = 0) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_field_seek ($result, $field_offset) {}
+function mysql_field_seek($result, $field_offset) {}
 
 /**
  * Free result memory
  * @link https://php.net/manual/en/function.mysql-free-result.php
  * @param resource $result
  * @return bool true on success or false on failure.
- * </p>
  * <p>
  * If a non-resource is used for the result, an
  * error of level E_WARNING will be emitted. It's worth noting that
  * mysql_query only returns a resource
  * for SELECT, SHOW, EXPLAIN, and DESCRIBE queries.
+ * </p>
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_free_result ($result) {}
+function mysql_free_result($result) {}
 
 /**
  * Get the name of the specified field in a result
@@ -557,7 +560,7 @@ function mysql_free_result ($result) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_field_name ($result, $field_offset) {}
+function mysql_field_name($result, $field_offset) {}
 
 /**
  * Get name of the table the specified field is in
@@ -568,7 +571,7 @@ function mysql_field_name ($result, $field_offset) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_field_table ($result, $field_offset) {}
+function mysql_field_table($result, $field_offset) {}
 
 /**
  * Returns the length of the specified field
@@ -579,7 +582,7 @@ function mysql_field_table ($result, $field_offset) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_field_len ($result, $field_offset) {}
+function mysql_field_len($result, $field_offset) {}
 
 /**
  * Get the type of the specified field in a result
@@ -594,7 +597,7 @@ function mysql_field_len ($result, $field_offset) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_field_type ($result, $field_offset) {}
+function mysql_field_type($result, $field_offset) {}
 
 /**
  * Get the flags associated with the specified field in a result
@@ -602,7 +605,6 @@ function mysql_field_type ($result, $field_offset) {}
  * @param resource $result
  * @param int $field_offset
  * @return string|false a string of flags associated with the result or false on failure.
- * </p>
  * <p>
  * The following flags are reported, if your version of MySQL
  * is current enough to support them: "not_null",
@@ -611,10 +613,11 @@ function mysql_field_type ($result, $field_offset) {}
  * "unsigned", "zerofill",
  * "binary", "enum",
  * "auto_increment" and "timestamp".
+ * </p>
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_field_flags ($result, $field_offset) {}
+function mysql_field_flags($result, $field_offset) {}
 
 /**
  * Escapes a string for use in a mysql_query
@@ -625,8 +628,8 @@ function mysql_field_flags ($result, $field_offset) {}
  * @return string the escaped string.
  * @removed 7.0
  */
-#[Deprecated(replacement: 'mysql_real_escape_string(%parameter0%)',since: '5.3')]
-function mysql_escape_string ($unescaped_string) {}
+#[Deprecated(replacement: 'mysql_real_escape_string(%parameter0%)', since: '5.3')]
+function mysql_escape_string($unescaped_string) {}
 
 /**
  * Escapes special characters in a string for use in an SQL statement
@@ -639,7 +642,7 @@ function mysql_escape_string ($unescaped_string) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_real_escape_string ($unescaped_string, $link_identifier = null) {}
+function mysql_real_escape_string($unescaped_string, $link_identifier = null) {}
 
 /**
  * Get current system status
@@ -652,7 +655,7 @@ function mysql_real_escape_string ($unescaped_string, $link_identifier = null) {
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_stat ($link_identifier = null) {}
+function mysql_stat($link_identifier = null) {}
 
 /**
  * Return the current thread ID
@@ -662,7 +665,7 @@ function mysql_stat ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_thread_id ($link_identifier = null) {}
+function mysql_thread_id($link_identifier = null) {}
 
 /**
  * Returns the name of the character set
@@ -672,7 +675,7 @@ function mysql_thread_id ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_client_encoding ($link_identifier = null) {}
+function mysql_client_encoding($link_identifier = null) {}
 
 /**
  * Ping a server connection or reconnect if there is no connection
@@ -683,7 +686,7 @@ function mysql_client_encoding ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_ping ($link_identifier = null) {}
+function mysql_ping($link_identifier = null) {}
 
 /**
  * Get MySQL client info
@@ -692,7 +695,7 @@ function mysql_ping ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_get_client_info () {}
+function mysql_get_client_info() {}
 
 /**
  * Get MySQL host info
@@ -703,7 +706,7 @@ function mysql_get_client_info () {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_get_host_info ($link_identifier = null) {}
+function mysql_get_host_info($link_identifier = null) {}
 
 /**
  * Get MySQL protocol info
@@ -713,7 +716,7 @@ function mysql_get_host_info ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_get_proto_info ($link_identifier = null) {}
+function mysql_get_proto_info($link_identifier = null) {}
 
 /**
  * Get MySQL server info
@@ -723,7 +726,7 @@ function mysql_get_proto_info ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_get_server_info ($link_identifier = null) {}
+function mysql_get_server_info($link_identifier = null) {}
 
 /**
  * Get information about the most recent query
@@ -736,7 +739,7 @@ function mysql_get_server_info ($link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_info ($link_identifier = null) {}
+function mysql_info($link_identifier = null) {}
 
 /**
  * Sets the client character set
@@ -750,8 +753,8 @@ function mysql_info ($link_identifier = null) {}
  * @removed 7.0
  * @see mysqli_set_charset()
  */
-#[Deprecated(replacement: 'Use mysqli_set_charset instead',since: '5.5')]
-function mysql_set_charset ($charset, $link_identifier = null) {}
+#[Deprecated(replacement: 'Use mysqli_set_charset instead', since: '5.5')]
+function mysql_set_charset($charset, $link_identifier = null) {}
 
 /**
  * @param $database_name
@@ -760,7 +763,7 @@ function mysql_set_charset ($charset, $link_identifier = null) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: "mysql_db_query(%parametersList%)", since: '5.3')]
-function mysql ($database_name, $query, $link_identifier) {}
+function mysql($database_name, $query, $link_identifier) {}
 
 /**
  * @param $result
@@ -768,7 +771,7 @@ function mysql ($database_name, $query, $link_identifier) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_field_name(%parametersList%)', since: '5.5')]
-function mysql_fieldname ($result, $field_index) {}
+function mysql_fieldname($result, $field_index) {}
 
 /**
  * @param $result
@@ -776,7 +779,7 @@ function mysql_fieldname ($result, $field_index) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_field_table(%parametersList%)', since: '5.5')]
-function mysql_fieldtable ($result, $field_offset) {}
+function mysql_fieldtable($result, $field_offset) {}
 
 /**
  * @param $result
@@ -784,7 +787,7 @@ function mysql_fieldtable ($result, $field_offset) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_field_len(%parametersList%)', since: '5.5')]
-function mysql_fieldlen ($result, $field_offset) {}
+function mysql_fieldlen($result, $field_offset) {}
 
 /**
  * @param $result
@@ -792,7 +795,7 @@ function mysql_fieldlen ($result, $field_offset) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_field_type(%parametersList%)', since: '5.5')]
-function mysql_fieldtype ($result, $field_offset) {}
+function mysql_fieldtype($result, $field_offset) {}
 
 /**
  * @param $result
@@ -800,7 +803,7 @@ function mysql_fieldtype ($result, $field_offset) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_field_flags(%parametersList%)', since: '5.5')]
-function mysql_fieldflags ($result, $field_offset) {}
+function mysql_fieldflags($result, $field_offset) {}
 
 /**
  * @param $database_name
@@ -808,21 +811,21 @@ function mysql_fieldflags ($result, $field_offset) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_select_db(%parametersList%)', since: '5.5')]
-function mysql_selectdb ($database_name, $link_identifier) {}
+function mysql_selectdb($database_name, $link_identifier) {}
 
 /**
  * @param $result
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_free_result(%parametersList%)', since: '5.5')]
-function mysql_freeresult ($result) {}
+function mysql_freeresult($result) {}
 
 /**
  * @param $result
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_num_fields(%parametersList%)', since: '5.5')]
-function mysql_numfields ($result) {}
+function mysql_numfields($result) {}
 
 /**
  * (PHP 4, PHP 5)
@@ -833,14 +836,14 @@ function mysql_numfields ($result) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_num_rows(%parametersList%)', since: '5.5')]
-function mysql_numrows ($result) {}
+function mysql_numrows($result) {}
 
 /**
  * @param $link_identifier [optional]
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_list_dbs(%parametersList%)', since: '5.5')]
-function mysql_listdbs ($link_identifier) {}
+function mysql_listdbs($link_identifier) {}
 
 /**
  * @param $database_name
@@ -848,7 +851,7 @@ function mysql_listdbs ($link_identifier) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_list_tables(%parametersList%)', since: '5.5')]
-function mysql_listtables ($database_name, $link_identifier) {}
+function mysql_listtables($database_name, $link_identifier) {}
 
 /**
  * @param $database_name
@@ -857,10 +860,10 @@ function mysql_listtables ($database_name, $link_identifier) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_list_fields(%parametersList%)', since: '5.5')]
-function mysql_listfields ($database_name, $table_name, $link_identifier) {}
+function mysql_listfields($database_name, $table_name, $link_identifier) {}
 
 /**
- * Retrieves database name from the call to <b>mysql_list_dbs</b>
+ * Retrieves database name from the call to {@see mysql_list_dbs}
  * @link https://php.net/manual/en/function.mysql-db-name.php
  * @param resource $result <p>
  * The result pointer from a call to <b>mysql_list_dbs</b>.
@@ -877,7 +880,7 @@ function mysql_listfields ($database_name, $table_name, $link_identifier) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_db_name ($result, $row, $field = null) {}
+function mysql_db_name($result, $row, $field = null) {}
 
 /**
  * @param $result
@@ -886,7 +889,7 @@ function mysql_db_name ($result, $row, $field = null) {}
  * @removed 7.0
  */
 #[Deprecated(replacement: 'mysql_db_name(%parametersList%)', since: '5.5')]
-function mysql_dbname ($result, $row, $field) {}
+function mysql_dbname($result, $row, $field) {}
 
 /**
  * Get table name of field
@@ -899,15 +902,15 @@ function mysql_dbname ($result, $row, $field) {}
  * The integer index (row/table number)
  * </p>
  * @return string|false The name of the table on success or false on failure.
- * </p>
  * <p>
  * Use the <b>mysql_tablename</b> function to
  * traverse this result pointer, or any function for result tables,
  * such as <b>mysql_fetch_array</b>.
+ * </p>
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_tablename ($result, $i) {}
+function mysql_tablename($result, $i) {}
 
 /**
  * @param $result
@@ -916,8 +919,7 @@ function mysql_tablename ($result, $i) {}
  * @removed 7.0
  */
 #[Deprecated(since: '5.5')]
-function mysql_table_name ($result, $row, $field) {}
-
+function mysql_table_name($result, $row, $field) {}
 
 /**
  * Columns are returned into the array having the fieldname as the array
@@ -926,7 +928,7 @@ function mysql_table_name ($result, $row, $field) {}
  * @deprecated 5.5
  * @removed 7.0
  */
-define ('MYSQL_ASSOC', 1);
+define('MYSQL_ASSOC', 1);
 
 /**
  * Columns are returned into the array having a numerical index to the
@@ -935,7 +937,7 @@ define ('MYSQL_ASSOC', 1);
  * @deprecated 5.5
  * @removed 7.0
  */
-define ('MYSQL_NUM', 2);
+define('MYSQL_NUM', 2);
 
 /**
  * Columns are returned into the array having both a numerical index
@@ -944,7 +946,7 @@ define ('MYSQL_NUM', 2);
  * @deprecated 5.5
  * @removed 7.0
  */
-define ('MYSQL_BOTH', 3);
+define('MYSQL_BOTH', 3);
 
 /**
  * Use compression protocol
@@ -952,7 +954,7 @@ define ('MYSQL_BOTH', 3);
  * @deprecated 5.5
  * @removed 7.0
  */
-define ('MYSQL_CLIENT_COMPRESS', 32);
+define('MYSQL_CLIENT_COMPRESS', 32);
 
 /**
  * Use SSL encryption. This flag is only available with version 4.x
@@ -962,7 +964,7 @@ define ('MYSQL_CLIENT_COMPRESS', 32);
  * @deprecated 5.5
  * @removed 7.0
  */
-define ('MYSQL_CLIENT_SSL', 2048);
+define('MYSQL_CLIENT_SSL', 2048);
 
 /**
  * Allow interactive_timeout seconds (instead of wait_timeout) of
@@ -971,7 +973,7 @@ define ('MYSQL_CLIENT_SSL', 2048);
  * @deprecated 5.5
  * @removed 7.0
  */
-define ('MYSQL_CLIENT_INTERACTIVE', 1024);
+define('MYSQL_CLIENT_INTERACTIVE', 1024);
 
 /**
  * Allow space after function names
@@ -979,7 +981,6 @@ define ('MYSQL_CLIENT_INTERACTIVE', 1024);
  * @deprecated 5.5
  * @removed 7.0
  */
-define ('MYSQL_CLIENT_IGNORE_SPACE', 256);
+define('MYSQL_CLIENT_IGNORE_SPACE', 256);
 
 // End of mysql v.1.0
-?>

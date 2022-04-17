@@ -2,6 +2,9 @@
 
 use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\Immutable;
+use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
+use JetBrains\PhpStorm\Internal\TentativeType;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * The <b>ReflectionExtension</b> class reports information about an extension.
@@ -10,11 +13,11 @@ use JetBrains\PhpStorm\Immutable;
  */
 class ReflectionExtension implements Reflector
 {
-
     /**
      * @var string Name of the extension, same as calling the {@see ReflectionExtension::getName()} method
      */
     #[Immutable]
+    #[LanguageLevelTypeAware(['8.1' => 'string'], default: '')]
     public $name;
 
     /**
@@ -22,11 +25,9 @@ class ReflectionExtension implements Reflector
      *
      * @link https://php.net/manual/en/reflectionextension.construct.php
      * @param string $name Name of the extension.
-     * @throws \ReflectionException if the extension does not exist.
+     * @throws ReflectionException if the extension does not exist.
      */
-    public function __construct($name)
-    {
-    }
+    public function __construct(#[LanguageLevelTypeAware(['8.0' => 'string'], default: '')] $name) {}
 
     /**
      * Exports a reflected extension.
@@ -42,9 +43,7 @@ class ReflectionExtension implements Reflector
      * @removed 8.0
      */
     #[Deprecated(since: '7.4')]
-    public static function export($name, $return = false)
-    {
-    }
+    public static function export($name, $return = false) {}
 
     /**
      * To string
@@ -53,9 +52,8 @@ class ReflectionExtension implements Reflector
      * @return string the exported extension as a string, in the same way as
      * the {@see ReflectionExtension::export()}.
      */
-    public function __toString()
-    {
-    }
+    #[TentativeType]
+    public function __toString(): string {}
 
     /**
      * Gets extension name
@@ -63,19 +61,19 @@ class ReflectionExtension implements Reflector
      * @link https://php.net/manual/en/reflectionextension.getname.php
      * @return string The extensions name.
      */
-    public function getName()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function getName(): string {}
 
     /**
      * Gets extension version
      *
      * @link https://php.net/manual/en/reflectionextension.getversion.php
-     * @return string The version of the extension.
+     * @return string|null The version of the extension.
      */
-    public function getVersion()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function getVersion(): ?string {}
 
     /**
      * Gets extension functions
@@ -85,9 +83,9 @@ class ReflectionExtension implements Reflector
      * for each function defined in the extension with the keys being the function
      * names. If no function are defined, an empty array is returned.
      */
-    public function getFunctions()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function getFunctions(): array {}
 
     /**
      * Gets constants
@@ -95,9 +93,9 @@ class ReflectionExtension implements Reflector
      * @link https://php.net/manual/en/reflectionextension.getconstants.php
      * @return array An associative array with constant names as keys.
      */
-    public function getConstants()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function getConstants(): array {}
 
     /**
      * Gets extension ini entries
@@ -106,9 +104,9 @@ class ReflectionExtension implements Reflector
      * @return array An associative array with the ini entries as keys,
      * with their defined values as values.
      */
-    public function getINIEntries()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function getINIEntries(): array {}
 
     /**
      * Gets classes
@@ -118,9 +116,9 @@ class ReflectionExtension implements Reflector
      * for each class within the extension. If no classes are defined,
      * an empty array is returned.
      */
-    public function getClasses()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function getClasses(): array {}
 
     /**
      * Gets class names
@@ -129,9 +127,9 @@ class ReflectionExtension implements Reflector
      * @return string[] An array of class names, as defined in the extension.
      * If no classes are defined, an empty array is returned.
      */
-    public function getClassNames()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function getClassNames(): array {}
 
     /**
      * Gets dependencies
@@ -140,9 +138,9 @@ class ReflectionExtension implements Reflector
      * @return string[] An associative array with dependencies as keys and
      * either Required, Optional or Conflicts as the values.
      */
-    public function getDependencies()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function getDependencies(): array {}
 
     /**
      * Print extension info
@@ -150,9 +148,8 @@ class ReflectionExtension implements Reflector
      * @link https://php.net/manual/en/reflectionextension.info.php
      * @return void Print extension info
      */
-    public function info()
-    {
-    }
+    #[TentativeType]
+    public function info(): void {}
 
     /**
      * Returns whether this extension is persistent
@@ -161,9 +158,9 @@ class ReflectionExtension implements Reflector
      * @return bool Returns {@see true} for extensions loaded by extension, {@see false} otherwise.
      * @since 5.4
      */
-    public function isPersistent()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function isPersistent(): bool {}
 
     /**
      * Returns whether this extension is temporary
@@ -172,9 +169,9 @@ class ReflectionExtension implements Reflector
      * @return bool Returns {@see true} for extensions loaded by {@see dl()}, {@see false} otherwise.
      * @since 5.4
      */
-    public function isTemporary()
-    {
-    }
+    #[Pure]
+    #[TentativeType]
+    public function isTemporary(): bool {}
 
     /**
      * Clones
@@ -182,7 +179,5 @@ class ReflectionExtension implements Reflector
      * @link https://php.net/manual/en/reflectionextension.clone.php
      * @return void No value is returned, if called a fatal error will occur.
      */
-    final private function __clone()
-    {
-    }
+    final private function __clone(): void {}
 }

@@ -3,19 +3,20 @@ declare(strict_types=1);
 
 namespace StubTests\Model;
 
+use Exception;
 use PhpParser\Node\Stmt\Interface_;
 use ReflectionClass;
 use stdClass;
 
 class PHPInterface extends BasePHPClass
 {
-    public array $parentInterfaces = [];
+    public $parentInterfaces = [];
 
     /**
      * @param ReflectionClass $reflectionObject
-     * @return $this
+     * @return static
      */
-    public function readObjectFromReflection($reflectionObject): static
+    public function readObjectFromReflection($reflectionObject)
     {
         $this->name = $reflectionObject->getName();
         foreach ($reflectionObject->getMethods() as $method) {
@@ -25,40 +26,54 @@ class PHPInterface extends BasePHPClass
             $this->methods[$method->name] = (new PHPMethod())->readObjectFromReflection($method);
         }
         $this->parentInterfaces = $reflectionObject->getInterfaceNames();
-        foreach ($reflectionObject->getReflectionConstants() as $constant) {
-            if ($constant->getDeclaringClass()->getName() !== $this->name) {
-                continue;
+        if (method_exists($reflectionObject, 'getReflectionConstants')) {
+            foreach ($reflectionObject->getReflectionConstants() as $constant) {
+                if ($constant->getDeclaringClass()->getName() !== $this->name) {
+                    continue;
+                }
+                $this->constants[$constant->name] = (new PHPConst())->readObjectFromReflection($constant);
             }
-            $this->constants[$constant->name] = (new PHPConst())->readObjectFromReflection($constant);
         }
         return $this;
     }
 
     /**
      * @param Interface_ $node
-     * @return $this
+     * @return static
      */
-    public function readObjectFromStubNode($node): static
+    public function readObjectFromStubNode($node)
     {
-        $this->name = $this->getFQN($node);
+        $this->name = self::getFQN($node);
         $this->collectTags($node);
+        $this->availableVersionsRangeFromAttribute = self::findAvailableVersionsRangeFromAttribute($node->attrGroups);
         if (!empty($node->extends)) {
-            $this->parentInterfaces[] = implode('\\', $node->extends[0]->parts);
+            foreach ($node->extends as $extend) {
+                $this->parentInterfaces[] = implode('\\', $extend->parts);
+            }
         }
         return $this;
     }
 
-    public function readMutedProblems(stdClass|array $jsonData): void
+    /**
+     * @param stdClass|array $jsonData
+     * @throws Exception
+     */
+    public function readMutedProblems($jsonData)
     {
         foreach ($jsonData as $interface) {
             if ($interface->name === $this->name) {
                 if (!empty($interface->problems)) {
                     foreach ($interface->problems as $problem) {
-                        $this->mutedProblems[] = match ($problem) {
-                            'wrong parent' => StubProblemType::WRONG_PARENT,
-                            'missing interface' => StubProblemType::STUB_IS_MISSED,
-                            default => -1
-                        };
+                        switch ($problem->description) {
+                            case 'wrong parent':
+                                $this->mutedProblems[StubProblemType::WRONG_PARENT] = $problem->versions;
+                                break;
+                            case 'missing interface':
+                                $this->mutedProblems[StubProblemType::STUB_IS_MISSED] = $problem->versions;
+                                break;
+                            default:
+                                throw new Exception("Unexpected value $problem->description");
+                        }
                     }
                 }
                 if (!empty($interface->methods)) {
@@ -71,7 +86,6 @@ class PHPInterface extends BasePHPClass
                         $constant->readMutedProblems($interface->constants);
                     }
                 }
-                return;
             }
         }
     }

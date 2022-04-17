@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace StubTests\Parsers;
 
 use FilesystemIterator;
+use JsonException;
 use LogicException;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
@@ -11,39 +12,48 @@ use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RuntimeException;
 use SplFileInfo;
+use StubTests\Model\CommonUtils;
 use StubTests\Model\StubsContainer;
 use StubTests\Parsers\Visitors\ASTVisitor;
 use StubTests\Parsers\Visitors\CoreStubASTVisitor;
 use StubTests\Parsers\Visitors\ParentConnector;
-use StubTests\TestData\Providers\PhpCoreStubsProvider;
+use StubTests\TestData\Providers\Stubs\PhpCoreStubsProvider;
 use UnexpectedValueException;
+use function dirname;
+use function in_array;
+use function strlen;
 
 class StubParser
 {
     private static ?StubsContainer $stubs = null;
 
+    /**
+     * @throws LogicException
+     * @throws RuntimeException
+     * @throws UnexpectedValueException
+     * @throws JsonException
+     */
     public static function getPhpStormStubs(): StubsContainer
     {
         self::$stubs = new StubsContainer();
         $visitor = new ASTVisitor(self::$stubs);
         $coreStubVisitor = new CoreStubASTVisitor(self::$stubs);
-        self::processStubs($visitor, $coreStubVisitor,
-            fn(SplFileInfo $file): bool => $file->getFilename() !== '.phpstorm.meta.php');
-        foreach (self::$stubs->getInterfaces() as $interface) {
-            $interface->parentInterfaces = $visitor->combineParentInterfaces($interface);
-        }
+        self::processStubs(
+            $visitor,
+            $coreStubVisitor,
+            fn (SplFileInfo $file): bool => $file->getFilename() !== '.phpstorm.meta.php'
+        );
 
-        foreach (self::$stubs->getClasses() as $class) {
-            $class->interfaces =
-                Utils::flattenArray($visitor->combineImplementedInterfaces($class), false);
-        }
-        $jsonData = json_decode(file_get_contents(__DIR__ . '/../TestData/mutedProblems.json'));
-        foreach (self::$stubs->getClasses() as $class) {
-            $class->readMutedProblems($jsonData->classes);
-        }
+        $jsonData = json_decode(file_get_contents(__DIR__ . '/../TestData/mutedProblems.json'), false, 512, JSON_THROW_ON_ERROR);
         foreach (self::$stubs->getInterfaces() as $interface) {
             $interface->readMutedProblems($jsonData->interfaces);
+            $interface->parentInterfaces = $visitor->combineParentInterfaces($interface);
+        }
+        foreach (self::$stubs->getClasses() as $class) {
+            $class->readMutedProblems($jsonData->classes);
+            $class->interfaces = CommonUtils::flattenArray($visitor->combineImplementedInterfaces($class), false);
         }
         foreach (self::$stubs->getFunctions() as $function) {
             $function->readMutedProblems($jsonData->functions);
@@ -55,9 +65,6 @@ class StubParser
     }
 
     /**
-     * @param NodeVisitorAbstract $visitor
-     * @param CoreStubASTVisitor|null $coreStubASTVisitor
-     * @param callable $fileCondition
      * @throws LogicException
      * @throws UnexpectedValueException
      */
@@ -83,8 +90,12 @@ class StubParser
             $traverser->addVisitor(new ParentConnector());
             $traverser->addVisitor($nameResolver);
             if ($coreStubASTVisitor !== null && self::stubBelongsToCore($file, $coreStubDirectories)) {
+                $coreStubASTVisitor->sourceFilePath = $file->getPath();
                 $traverser->addVisitor($coreStubASTVisitor);
             } else {
+                if ($visitor instanceof ASTVisitor) {
+                    $visitor->sourceFilePath = $file->getPath();
+                }
                 $traverser->addVisitor($visitor);
             }
             $traverser->traverse($parser->parse($code, new StubsParserErrorHandler()));

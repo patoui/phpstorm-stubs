@@ -15,10 +15,10 @@
   ],
   "require-dev": {
     "php": "^8.0",
-    "nikic/php-parser": "dev-master",
-    "phpdocumentor/reflection-docblock": "dev-master",
-    "phpunit/phpunit": "^9",
-    "friendsofphp/php-cs-fixer": "^2.16"
+    "nikic/php-parser": "@stable",
+    "phpdocumentor/reflection-docblock": "@stable",
+    "phpunit/phpunit": "@stable",
+    "friendsofphp/php-cs-fixer": "@stable"
   },
   "autoload": {
     "files": ["PhpStormStubsMap.php"]
@@ -31,10 +31,5 @@
   "scripts": {
     "cs": "php-cs-fixer fix -v --diff --dry-run",
     "cs-fix": "php-cs-fixer fix -v --diff"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "2020.x"
-    }
   }
 }

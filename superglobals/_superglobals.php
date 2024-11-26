@@ -135,7 +135,8 @@ $_SERVER['SERVER_NAME'] = 'localhost';
 $_SERVER['SERVER_SOFTWARE'] = '';
 $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
 $_SERVER['REQUEST_METHOD'] = 'GET';
-$_SERVER['REQUEST_TIME'] = '';
+$_SERVER['REQUEST_TIME'] = 946713600;
+$_SERVER['REQUEST_TIME_FLOAT'] = 946713600.123456;
 $_SERVER['QUERY_STRING'] = '';
 $_SERVER['DOCUMENT_ROOT'] = '';
 $_SERVER['HTTP_ACCEPT'] = '';
@@ -150,6 +151,8 @@ $_SERVER['HTTPS'] = '';
 $_SERVER['REMOTE_ADDR'] = '';
 $_SERVER['REMOTE_HOST'] = '';
 $_SERVER['REMOTE_PORT'] = '';
+$_SERVER['REMOTE_USER'] = '';
+$_SERVER['REDIRECT_REMOTE_USER'] = '';
 $_SERVER['SCRIPT_FILENAME'] = '';
 $_SERVER['SERVER_ADMIN'] = '';
 $_SERVER['SERVER_PORT'] = '80';
@@ -184,6 +187,7 @@ $HTTP_SESSION_VARS = [];
 
 /**
  * @xglobal $argc int
+ * @type int<1, max>
  *
  * The number of arguments passed to script
  *
@@ -200,7 +204,7 @@ $argc = 0;
  * <p><a href="https://secure.php.net/manual/en/reserved.variables.php">
  * https://secure.php.net/manual/en/reserved.variables.php</a>
  */
-$argv = [];
+$argv = [1 + 1 => "a" . "b"];
 
 /**
  * @xglobal $HTTP_RAW_POST_DATA string

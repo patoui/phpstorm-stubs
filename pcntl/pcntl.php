@@ -95,7 +95,12 @@ function pcntl_fork(): int {}
  * child which exited, -1 on error or zero if <b>WNOHANG</b> was used and no
  * child was available
  */
-function pcntl_waitpid(int $process_id, &$status, int $flags = 0, &$resource_usage = []): int {}
+function pcntl_waitpid(
+    int $process_id,
+    &$status,
+    int $flags = 0,
+    #[PhpStormStubsElementAvailable(from: '7.0')] &$resource_usage = []
+): int {}
 
 /**
  * Waits on or returns the status of a forked child
@@ -141,7 +146,12 @@ function pcntl_waitpid(int $process_id, &$status, int $flags = 0, &$resource_usa
  * child which exited, -1 on error or zero if WNOHANG was provided as an
  * option (on wait3-available systems) and no child was available.
  */
-function pcntl_wait(&$status, int $flags = 0, &$resource_usage = []): int {}
+function pcntl_wait(
+    &$status,
+    int $flags = 0,
+    #[PhpStormStubsElementAvailable(from: '7.0')] &$resource_usage
+= []
+): int {}
 
 /**
  * Installs a signal handler
@@ -483,6 +493,22 @@ function pcntl_signal_get_handler(int $signal) {}
  * @since 7.4
  */
 function pcntl_unshare(int $flags): bool {}
+/**
+ * @since 8.4
+ */
+function pcntl_waitid(int $idtype = P_ALL, ?int $id = null, &$info = [], int $flags = WEXITED): bool {}
+/**
+ * @since 8.4
+ */
+function pcntl_getcpuaffinity(?int $process_id = null): array|false {}
+/**
+ * @since 8.4
+ */
+function pcntl_setcpuaffinity(?int $process_id = null, array $cpu_ids = []): bool {}
+/**
+ * @since 8.4
+ */
+function pcntl_getcpu(): int {}
 
 define('WNOHANG', 1);
 define('WUNTRACED', 2);
@@ -723,7 +749,7 @@ define('FPE_FLTOVF', 4);
 /**
  * @link https://php.net/manual/en/pcntl.constants.php
  */
-define('FPE_FLTUND', 7);
+define('FPE_FLTUND', 5);
 
 /**
  * @link https://php.net/manual/en/pcntl.constants.php
@@ -830,5 +856,32 @@ define('CLONE_NEWUSER', 268435456);
  * @since 7.4
  */
 define('CLONE_NEWCGROUP', 33554432);
-
+/**
+ * @since 8.4
+ */
+define('P_ALL', 0);
+/**
+ * @since 8.4
+ */
+define('WEXITED', 4);
+/**
+ * @since 8.4
+ */
+define('WSTOPPED', 2);
+/**
+ * @since 8.4
+ */
+define('WNOWAIT', 16777216);
+/**
+ * @since 8.4
+ */
+define('P_PID', 1);
+/**
+ * @since 8.4
+ */
+define('P_PGID', 2);
+/**
+ * @since 8.4
+ */
+define('P_PIDFD', 3);
 // End of pcntl v.

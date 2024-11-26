@@ -1,6 +1,7 @@
 <?php
 
 // Start of pgsql v.
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use JetBrains\PhpStorm\Internal\PhpStormStubsElementAvailable;
 
@@ -98,9 +99,9 @@ function pg_pconnect(
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
  */
-function pg_close(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection = null): bool {}
+#[LanguageLevelTypeAware(['8.3' => 'true'], default: 'bool')]
+function pg_close(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection = null) {}
 
 /**
  * Poll the status of an in-progress asynchronous PostgreSQL connection attempt.
@@ -241,6 +242,7 @@ function pg_options(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'],
  * and server keys and values (if available). Returns
  * <b>FALSE</b> on error or invalid connection.
  */
+#[ArrayShape(["client" => "string", "protocol" => "int", "server" => "string"])]
 function pg_version(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection = null): array {}
 
 /**
@@ -265,7 +267,7 @@ function pg_ping(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], de
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param string $name <p>
+ * @param string $name [optional] <p>
  * Possible <i>param_name</i> values include server_version,
  * server_encoding, client_encoding,
  * is_superuser, session_authorization,
@@ -275,7 +277,7 @@ function pg_ping(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], de
  * @return string|false A string containing the value of the parameter, <b>FALSE</b> on failure or invalid
  * <i>param_name</i>.
  */
-function pg_parameter_status(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection, string $name = null): string|false {}
+function pg_parameter_status(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection, string $name): string|false {}
 
 /**
  * Returns the current in-transaction status of the server.
@@ -302,7 +304,7 @@ function pg_transaction_status(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connect
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param string $query <p>
+ * @param string $query [optional] <p>
  * The SQL statement or statements to be executed. When multiple statements are passed to the function,
  * they are automatically executed as one transaction, unless there are explicit BEGIN/COMMIT commands
  * included in the query string. However, using multiple transactions in one function call is not recommended.
@@ -325,7 +327,7 @@ function pg_transaction_status(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connect
 function pg_query(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    string $query = null
+    string $query
 ) {}
 
 /**
@@ -350,7 +352,7 @@ function pg_query(
  * If for some reason you cannot use a parameter, ensure that interpolated
  * values are properly escaped.
  * </p>
- * @param array $params <p>
+ * @param array $params [optional] <p>
  * An array of parameter values to substitute for the $1, $2, etc. placeholders
  * in the original prepared query string. The number of elements in the array
  * must match the number of placeholders.
@@ -368,7 +370,7 @@ function pg_query_params(
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $query = '',
     #[PhpStormStubsElementAvailable(from: '8.0')] $query,
-    array $params = null
+    array $params
 ) {}
 
 /**
@@ -386,7 +388,7 @@ function pg_query_params(
  * "" is specified, then an unnamed statement is created, overwriting any
  * previously defined unnamed statement.
  * </p>
- * @param string $query <p>
+ * @param string $query [optional] <p>
  * The parameterized SQL statement. Must contain only a single statement.
  * (multiple statements separated by semi-colons are not allowed.) If any parameters
  * are used, they are referred to as $1, $2, etc.
@@ -399,7 +401,7 @@ function pg_prepare(
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] string $statement_name = '',
     #[PhpStormStubsElementAvailable(from: '8.0')] string $statement_name,
-    string $query = null
+    string $query
 ) {}
 
 /**
@@ -418,7 +420,7 @@ function pg_prepare(
  * <b>pg_send_prepare</b> or a PREPARE SQL
  * command.
  * </p>
- * @param array $params <p>
+ * @param array $params [optional] <p>
  * An array of parameter values to substitute for the $1, $2, etc. placeholders
  * in the original prepared query string. The number of elements in the array
  * must match the number of placeholders.
@@ -434,7 +436,7 @@ function pg_execute(
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] string $statement_name = '',
     #[PhpStormStubsElementAvailable(from: '8.0')] $statement_name,
-    array $params = null
+    array $params
 ) {}
 
 /**
@@ -564,7 +566,7 @@ function pg_cancel_query(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'],
  * Row number in result to fetch. Rows are numbered from 0 upwards. If omitted,
  * next row is fetched.
  * </p>
- * @param mixed $field <p>
+ * @param mixed $field [optional] <p>
  * A string representing the name of the field (column) to fetch, otherwise
  * an int representing the field number to fetch. Fields are
  * numbered from 0 upwards.
@@ -583,7 +585,7 @@ function pg_fetch_result(
     #[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result,
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $row = 0,
     #[PhpStormStubsElementAvailable(from: '8.0')] $row,
-    string|int $field = null
+    string|int $field
 ): string|false|null {}
 
 /**
@@ -721,14 +723,15 @@ function pg_fetch_object(
  * while <b>PGSQL_BOTH</b>, the default, will return both
  * numerical and associative indices.
  * </p>
- * @return array An array with all rows in the result. Each row is an array
+ * @return array|false An array with all rows in the result. Each row is an array
  * of field values indexed by field name.
  * </p>
  * <p>
  * <b>FALSE</b> is returned if there are no rows in the result, or on any
  * other error.
  */
-function pg_fetch_all(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result, int $mode = PGSQL_ASSOC): array {}
+#[LanguageLevelTypeAware(['8.0' => 'array'], default: 'array|false')]
+function pg_fetch_all(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result, int $mode = PGSQL_ASSOC) {}
 
 /**
  * Fetches all rows in a particular result column as an array
@@ -948,14 +951,14 @@ function pg_field_type_oid(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], d
  * (among others).
  * </p>
  * @param int $row
- * @param mixed $field
+ * @param mixed $field [optional]
  * @return int|false The field printed length, or <b>FALSE</b> on error.
  */
 function pg_field_prtlen(
     #[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result,
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $row = 0,
     #[PhpStormStubsElementAvailable(from: '8.0')] $row,
-    string|int $field = null
+    string|int $field
 ): int|false {}
 
 /**
@@ -970,7 +973,7 @@ function pg_field_prtlen(
  * Row number in result to fetch. Rows are numbered from 0 upwards. If omitted,
  * current row is fetched.
  * </p>
- * @param mixed $field <p>
+ * @param mixed $field [optional] <p>
  * Field number (starting from 0) as an integer or
  * the field name as a string.
  * </p>
@@ -981,7 +984,7 @@ function pg_field_is_null(
     #[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result,
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $row = 0,
     #[PhpStormStubsElementAvailable(from: '8.0')] $row,
-    string|int $field = null
+    string|int $field
 ): int|false {}
 
 /**
@@ -1025,6 +1028,7 @@ function pg_field_table(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], defa
  * @return array|false An array containing the NOTIFY message name and backend PID.
  * Otherwise if no NOTIFY is waiting, then <b>FALSE</b> is returned.
  */
+#[ArrayShape(["message" => "string", "pid" => "int", "payload" => "string"])]
 function pg_get_notify(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
@@ -1125,7 +1129,7 @@ function pg_last_notice(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], 
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param string $query <p>
+ * @param string $query [optional] <p>
  * A line of text to be sent directly to the PostgreSQL backend. A NULL
  * terminator is added automatically.
  * </p>
@@ -1134,7 +1138,7 @@ function pg_last_notice(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], 
 function pg_put_line(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    string $query = null
+    string $query
 ): bool {}
 
 /**
@@ -1226,9 +1230,15 @@ function pg_copy_from(
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
+ * @param int $trace_mode Since PHP 8.3 optional trace mode
  * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
  */
-function pg_trace(string $filename, string $mode = "w", #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection = null): bool {}
+function pg_trace(
+    string $filename,
+    string $mode = "w",
+    #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection = null,
+    #[PhpStormStubsElementAvailable(from: '8.3')] int $trace_mode = 0
+): bool {}
 
 /**
  * Disable tracing of a PostgreSQL connection
@@ -1239,9 +1249,9 @@ function pg_trace(string $filename, string $mode = "w", #[LanguageLevelTypeAware
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @return bool Always returns <b>TRUE</b>.
  */
-function pg_untrace(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection = null): bool {}
+#[LanguageLevelTypeAware(['8.3' => 'true'], default: 'bool')]
+function pg_untrace(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection = null) {}
 
 /**
  * Create a large object
@@ -1261,7 +1271,7 @@ function pg_untrace(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'],
  * </p>
  * @return string|int|false A large object OID or <b>FALSE</b> on error.
  */
-function pg_lo_create(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection = null, $oid = null): string|int|false {}
+function pg_lo_create(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection, $oid): string|int|false {}
 
 /**
  * Delete a large object
@@ -1272,7 +1282,7 @@ function pg_lo_create(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], de
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param int $oid <p>
+ * @param int $oid [optional] <p>
  * The OID of the large object in the database.
  * </p>
  * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
@@ -1280,7 +1290,7 @@ function pg_lo_create(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], de
 function pg_lo_unlink(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    $oid = null
+    $oid
 ): bool {}
 
 /**
@@ -1292,10 +1302,10 @@ function pg_lo_unlink(
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param int $oid <p>
+ * @param int $oid [optional] <p>
  * The OID of the large object in the database.
  * </p>
- * @param string $mode <p>
+ * @param string $mode [optional] <p>
  * Can be either "r" for read-only, "w" for write only or "rw" for read and
  * write.
  * </p>
@@ -1305,8 +1315,8 @@ function pg_lo_unlink(
 function pg_lo_open(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    $oid = null,
-    string $mode = null
+    $oid,
+    string $mode
 ) {}
 
 /**
@@ -1469,7 +1479,7 @@ function pg_lo_truncate(
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param string $string <p>
+ * @param string $string [optional] <p>
  * A string containing text to be escaped.
  * </p>
  * @return string A string containing the escaped data.
@@ -1477,7 +1487,7 @@ function pg_lo_truncate(
 function pg_escape_string(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    string $string = null
+    string $string
 ): string {}
 
 /**
@@ -1489,7 +1499,7 @@ function pg_escape_string(
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param string $string <p>
+ * @param string $string [optional] <p>
  * A string containing text or binary data to be inserted into a bytea
  * column.
  * </p>
@@ -1498,7 +1508,7 @@ function pg_escape_string(
 function pg_escape_bytea(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    string $string = null
+    string $string
 ): string {}
 
 /**
@@ -1510,7 +1520,7 @@ function pg_escape_bytea(
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param string $string <p>
+ * @param string $string [optional] <p>
  * A string containing text to be escaped.
  * </p>
  * @return string|false A string containing the escaped data.
@@ -1519,7 +1529,7 @@ function pg_escape_bytea(
 function pg_escape_identifier(
     #[PhpStormStubsElementAvailable(from: '5.4', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    string $string = null
+    string $string
 ): string|false {}
 
 /**
@@ -1531,7 +1541,7 @@ function pg_escape_identifier(
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param string $string <p>
+ * @param string $string [optional] <p>
  * A string containing text to be escaped.
  * </p>
  * @return string|false A string containing the escaped data.
@@ -1540,7 +1550,7 @@ function pg_escape_identifier(
 function pg_escape_literal(
     #[PhpStormStubsElementAvailable(from: '5.4', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    string $string = null
+    string $string
 ): string|false {}
 
 /**
@@ -1564,7 +1574,7 @@ function pg_unescape_bytea(string $string): string {}
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param int $verbosity <p>
+ * @param int $verbosity [optional] <p>
  * The required verbosity: <b>PGSQL_ERRORS_TERSE</b>,
  * <b>PGSQL_ERRORS_DEFAULT</b>
  * or <b>PGSQL_ERRORS_VERBOSE</b>.
@@ -1576,7 +1586,7 @@ function pg_unescape_bytea(string $string): string {}
 function pg_set_error_verbosity(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    int $verbosity = null
+    int $verbosity
 ): int|false {}
 
 /**
@@ -1601,7 +1611,7 @@ function pg_client_encoding(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection
  * is used. The default connection is the last connection made by
  * <b>pg_connect</b> or <b>pg_pconnect</b>.
  * </p>
- * @param string $encoding <p>
+ * @param string $encoding [optional] <p>
  * The required client encoding. One of SQL_ASCII, EUC_JP,
  * EUC_CN, EUC_KR, EUC_TW,
  * UNICODE, MULE_INTERNAL, LATINX (X=1...9),
@@ -1617,7 +1627,7 @@ function pg_client_encoding(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection
 function pg_set_client_encoding(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    string $encoding = null
+    string $encoding
 ): int {}
 
 /**
@@ -1800,55 +1810,55 @@ function pg_delete(
 function pg_select(
     #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
     string $table_name,
-    array $conditions,
+    array $conditions = [],
     int $flags = PGSQL_DML_EXEC,
     int $mode = PGSQL_ASSOC
 ): array|string|false {}
 
 /**
  * @param $connection
- * @param $query
+ * @param $query [optional]
  * @return mixed
  */
 #[LanguageLevelTypeAware(['8.1' => 'PgSql\Result|false'], default: 'resource|false')]
 function pg_exec(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection,
-    string $query = null
+    string $query
 ) {}
 
 /**
  * @param $result
  * @return string|int|false
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_getlastoid(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result): string|int|false {}
 
 /**
  * @param $result
  * @return int
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_cmdtuples(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result): int {} // TODO remove
 
 /**
  * @param $connection [optional]
  * @return string
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_errormessage(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection): string {}
 
 /**
  * @param $result
  * @return int
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_numrows(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result): int {}
 
 /**
  * @param $result
  * @return int
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_numfields(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result): int {}
 
@@ -1856,7 +1866,7 @@ function pg_numfields(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], defaul
  * @param $result
  * @param $field
  * @return string
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_fieldname(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result, int $field): string {}
 
@@ -1864,7 +1874,7 @@ function pg_fieldname(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], defaul
  * @param $result
  * @param $field
  * @return int
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_fieldsize(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result, int $field): int {}
 
@@ -1872,7 +1882,7 @@ function pg_fieldsize(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], defaul
  * @param $result
  * @param $field
  * @return string
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_fieldtype(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result, int $field): string {}
 
@@ -1880,7 +1890,7 @@ function pg_fieldtype(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], defaul
  * @param $result
  * @param $field
  * @return int
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_fieldnum(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result, string $field): int {}
 
@@ -1889,7 +1899,7 @@ function pg_fieldnum(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default
  * @param $row
  * @param $field [optional]
  * @return int|false
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_fieldprtlen(
     #[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result,
@@ -1903,7 +1913,7 @@ function pg_fieldprtlen(
  * @param $row
  * @param $field [optional]
  * @return int|false
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_fieldisnull(
     #[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result,
@@ -1915,26 +1925,26 @@ function pg_fieldisnull(
 /**
  * @param $result
  * @return bool
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_freeresult(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result): bool {}
 
 /**
  * @param PgSql\Result|resource $result
  * @param $row
- * @param $field
- * @deprecated
+ * @param $field [optional]
+ * @deprecated 8.0
  */
 function pg_result(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection,
     #[PhpStormStubsElementAvailable(from: '8.0')] #[LanguageLevelTypeAware(['8.1' => 'PgSql\Result'], default: 'resource')] $result,
     #[PhpStormStubsElementAvailable(from: '8.0')] $row,
-    #[PhpStormStubsElementAvailable(from: '8.0')] string|int $field = null
+    #[PhpStormStubsElementAvailable(from: '8.0')] string|int $field
 ): string|null|false {}
 
 /**
  * @param $lob
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_loreadall(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob'], default: 'resource')] $lob): int {} // TODO remove
 
@@ -1942,7 +1952,7 @@ function pg_loreadall(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob'], default: 
  * @param $connection [optional]
  * @param $oid [optional]
  * @return string|int|false
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_locreate(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection, $oid): string|int|false {}
 
@@ -1950,7 +1960,7 @@ function pg_locreate(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], def
  * @param $connection
  * @param $oid [optional]
  * @return bool
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_lounlink(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
@@ -1963,7 +1973,7 @@ function pg_lounlink(
  * @param $oid [optional]
  * @param $mode [optional]
  * @return resource
- * @deprecated
+ * @deprecated 8.0
  */
 #[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob|false'], default: 'resource|false')]
 function pg_loopen(
@@ -1976,7 +1986,7 @@ function pg_loopen(
 /**
  * @param $lob
  * @return bool
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_loclose(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob'], default: 'resource')] $lob): bool {}
 
@@ -1984,7 +1994,7 @@ function pg_loclose(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob'], default: 'r
  * @param $lob
  * @param $length
  * @return string|false
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_loread(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob'], default: 'resource')] $lob, int $length = 8192): string|false {}
 
@@ -1993,7 +2003,7 @@ function pg_loread(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob'], default: 're
  * @param $data
  * @param $length [optional]
  * @return int|false
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_lowrite(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob'], default: 'resource')] $lob, string $data, ?int $length): int|false {}
 
@@ -2002,7 +2012,7 @@ function pg_lowrite(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Lob'], default: 'r
  * @param $filename [optional]
  * @param $oid [optional]
  * @return string|int|false
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_loimport(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
@@ -2016,7 +2026,7 @@ function pg_loimport(
  * @param $oid [optional]
  * @param $filename [optional]
  * @return bool
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_loexport(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
@@ -2028,7 +2038,7 @@ function pg_loexport(
 /**
  * @param $connection [optional]
  * @return string
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_clientencoding(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|null'], default: 'resource')] $connection): string {}
 
@@ -2036,7 +2046,7 @@ function pg_clientencoding(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection|
  * @param $connection
  * @param $encoding [optional]
  * @return int
- * @deprecated
+ * @deprecated 8.0
  */
 function pg_setclientencoding(
     #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $connection = null,
@@ -2062,8 +2072,62 @@ function pg_consume_input(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection']
  */
 function pg_flush(#[LanguageLevelTypeAware(['8.1' => 'PgSql\Connection'], default: 'resource')] $connection): int|bool {}
 
-define('PGSQL_LIBPQ_VERSION', "14.2");
-define('PGSQL_LIBPQ_VERSION_STR', "14.2");
+/**
+ * @since 8.3
+ */
+function pg_set_error_context_visibility(PgSql\Connection $connection, int $visibility): int {}
+
+/**
+ * @since 8.3
+ */
+function pg_pipeline_status(PgSql\Connection $connection): int {}
+
+/**
+ * @since 8.3
+ */
+function pg_pipeline_sync(PgSql\Connection $connection): bool {}
+
+/**
+ * @since 8.3
+ */
+function pg_exit_pipeline_mode(PgSql\Connection $connection): bool {}
+
+/**
+ * @since 8.3
+ */
+function pg_enter_pipeline_mode(PgSql\Connection $connection): bool {}
+
+/**
+ * @since 8.4
+ */
+function pg_result_memory_size(PgSql\Result $result): int {}
+/**
+ * @since 8.4
+ */
+function pg_change_password(PgSql\Connection $connection, string $user, #[\SensitiveParameter] string $password): bool {}
+/**
+ * @since 8.4
+ */
+function pg_put_copy_data(PgSql\Connection $connection, string $cmd): int {}
+
+/**
+ * @since  8.4
+ * @param resource $socket
+ */
+function pg_socket_poll($socket, int $read, int $write, int $timeout = -1): int {}
+/**
+ * @since 8.4
+ */
+function pg_put_copy_end(PgSql\Connection $connection, ?string $error = null): int {}
+
+/**
+ * @since 8.4
+ * @return array<string, string|null>
+ */
+function pg_jit(?PgSql\Connection $connection = null): array {}
+
+define('PGSQL_LIBPQ_VERSION', "16.2");
+define('PGSQL_LIBPQ_VERSION_STR', "16.2");
 
 /**
  * Passed to <b>pg_connect</b> to force the creation of a new connection,
@@ -2422,4 +2486,15 @@ const PGSQL_DIAG_COLUMN_NAME = 99;
 const PGSQL_DIAG_DATATYPE_NAME = 100;
 const PGSQL_DIAG_CONSTRAINT_NAME = 110;
 const PGSQL_DIAG_SEVERITY_NONLOCALIZED = 86;
+
+const PGSQL_ERRORS_SQLSTATE = 0;
+const PGSQL_TRACE_REGRESS_MODE = 2;
+const PGSQL_PIPELINE_SYNC = 10;
+const PGSQL_PIPELINE_ON = 1;
+const PGSQL_PIPELINE_OFF = 0;
+const PGSQL_PIPELINE_ABORTED = 2;
+const PGSQL_SHOW_CONTEXT_NEVER = 0;
+const PGSQL_SHOW_CONTEXT_ERRORS = 1;
+const PGSQL_SHOW_CONTEXT_ALWAYS = 2;
+
 // End of pgsql v.

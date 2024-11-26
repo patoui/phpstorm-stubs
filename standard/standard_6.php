@@ -122,7 +122,8 @@ function stream_context_create(?array $options, ?array $params) {}
  * </p>
  * @return bool true on success or false on failure.
  */
-function stream_context_set_params($context, array $params): bool {}
+#[LanguageLevelTypeAware(['8.4' => 'true'], default: 'bool')]
+function stream_context_set_params($context, array $params) {}
 
 /**
  * Retrieves parameters from a context
@@ -133,6 +134,7 @@ function stream_context_set_params($context, array $params): bool {}
  * </p>
  * @return array an associate array containing all context options and parameters.
  */
+#[ArrayShape(["notification" => "string", "options" => "array"])]
 function stream_context_get_params($context): array {}
 
 /**
@@ -146,7 +148,8 @@ function stream_context_get_params($context): array {}
  * @param mixed $value
  * @return bool true on success or false on failure.
  */
-function stream_context_set_option($context, string $wrapper_or_options, string $option_name, mixed $value): bool {}
+#[LanguageLevelTypeAware(['8.4' => 'true'], default: 'bool')]
+function stream_context_set_option($context, string $wrapper_or_options, string $option_name, mixed $value) {}
 
 /**
  * Sets an option for a stream/wrapper/context
@@ -155,7 +158,14 @@ function stream_context_set_option($context, string $wrapper_or_options, string 
  * @param array $options The options to set for the default context.
  * @return bool true on success or false on failure.
  */
-function stream_context_set_option($stream_or_context, array $options): bool {}
+#[LanguageLevelTypeAware(['8.4' => 'true'], default: 'bool')]
+function stream_context_set_option($stream_or_context, array $options) {}
+
+/**
+ * @since 8.3
+ */
+#[LanguageLevelTypeAware(['8.4' => 'true'], default: 'bool')]
+function stream_context_set_options($context, array $options) {}
 
 /**
  * Retrieve options for a stream/wrapper/context
@@ -652,7 +662,7 @@ function fputcsv(
     array $fields,
     string $separator = ",",
     string $enclosure = '"',
-    string $escape = "\\",
+    #[PhpStormStubsElementAvailable(from: '7.0')] string $escape = "\\",
     #[PhpStormStubsElementAvailable('8.1')] string $eol = PHP_EOL
 ): int|false {}
 
@@ -983,7 +993,7 @@ function stream_wrapper_restore(string $protocol): bool {}
 /**
  * Retrieve list of registered streams
  * @link https://php.net/manual/en/function.stream-get-wrappers.php
- * @return array an indexed array containing the name of all stream wrappers
+ * @return list<string> an indexed array containing the name of all stream wrappers
  * available on the running system.
  */
 #[Pure(true)]
@@ -992,7 +1002,7 @@ function stream_get_wrappers(): array {}
 /**
  * Retrieve list of registered socket transports
  * @link https://php.net/manual/en/function.stream-get-transports.php
- * @return array an indexed array of socket transports names.
+ * @return list<string> an indexed array of socket transports names.
  */
 #[Pure(true)]
 function stream_get_transports(): array {}
@@ -1045,7 +1055,12 @@ function get_headers(
  * </p>
  * @return bool true on success or false on failure.
  */
-function stream_set_timeout($stream, int $seconds, int $microseconds = 0): bool {}
+function stream_set_timeout(
+    $stream,
+    int $seconds,
+    #[PhpStormStubsElementAvailable(from: '5.3', to: '5.6')] int $microseconds,
+    #[PhpStormStubsElementAvailable(from: '7.0')] int $microseconds = 0
+): bool {}
 
 /**
  * Alias:
@@ -1058,12 +1073,17 @@ function stream_set_timeout($stream, int $seconds, int $microseconds = 0): bool 
  * @param int $seconds <p>
  * The seconds part of the timeout to be set.
  * </p>
- * @param int $microseconds [optional] <p>
+ * @param int $microseconds <p>
  * The microseconds part of the timeout to be set.
  * </p>
  * @return bool true on success or false on failure.
  */
-function socket_set_timeout($stream, int $seconds, int $microseconds = 0): bool {}
+function socket_set_timeout(
+    $stream,
+    int $seconds,
+    #[PhpStormStubsElementAvailable(from: '5.3', to: '5.6')] int $microseconds,
+    #[PhpStormStubsElementAvailable(from: '7.0')] int $microseconds = 0
+): bool {}
 
 /**
  * Alias:

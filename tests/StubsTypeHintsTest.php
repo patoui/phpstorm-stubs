@@ -3,27 +3,35 @@ declare(strict_types=1);
 
 namespace StubTests;
 
-use PHPUnit\Framework\Exception;
-use RuntimeException;
-use StubTests\Model\PHPClass;
-use StubTests\Model\PHPFunction;
-use StubTests\Model\PHPInterface;
-use StubTests\Model\PHPMethod;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use stdClass;
 use StubTests\Model\PHPParameter;
 use StubTests\Model\StubProblemType;
 use StubTests\TestData\Providers\PhpStormStubsSingleton;
+use StubTests\TestData\Providers\Reflection\ReflectionFunctionsProvider;
+use StubTests\TestData\Providers\Reflection\ReflectionMethodsProvider;
+use StubTests\TestData\Providers\Reflection\ReflectionParametersProvider;
 use StubTests\TestData\Providers\ReflectionStubsSingleton;
+use StubTests\TestData\Providers\Stubs\StubMethodsProvider;
+use StubTests\TestData\Providers\Stubs\StubsParametersProvider;
 
 class StubsTypeHintsTest extends AbstractBaseStubsTestCase
 {
-    /**
-     * @dataProvider \StubTests\TestData\Providers\Reflection\ReflectionFunctionsProvider::allFunctionsProvider
-     * @throws RuntimeException
-     */
-    public function testFunctionsReturnTypeHints(PHPFunction $function)
+    public static function setUpBeforeClass(): void
     {
-        $functionName = $function->name;
-        $stubFunction = PhpStormStubsSingleton::getPhpStormStubs()->getFunction($functionName);
+        parent::setUpBeforeClass();
+        PhpStormStubsSingleton::getPhpStormStubs();
+        ReflectionStubsSingleton::getReflectionStubs();
+    }
+
+    #[DataProviderExternal(ReflectionFunctionsProvider::class, 'functionsForReturnTypeHintsTestProvider')]
+    public function testFunctionsReturnTypeHints(?string $functionId)
+    {
+        if (!$functionId) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $function = ReflectionStubsSingleton::getReflectionStubs()->getFunction($functionId, fromReflection: true);
+        $stubFunction = PhpStormStubsSingleton::getPhpStormStubs()->getFunction($functionId);
         $unifiedStubsReturnTypes = [];
         $unifiedStubsAttributesReturnTypes = [];
         $unifiedReflectionReturnTypes = [];
@@ -38,7 +46,7 @@ class StubsTypeHintsTest extends AbstractBaseStubsTestCase
         $conditionToCompareWithSignature = AbstractBaseStubsTestCase::isReflectionTypesMatchSignature(
             $unifiedReflectionReturnTypes,
             $unifiedStubsReturnTypes
-        );
+        ) || empty($unifiedReflectionReturnTypes);
         $typesFromAttribute = [];
         if (!empty($unifiedStubsAttributesReturnTypes)) {
             $typesFromAttribute = !empty($unifiedStubsAttributesReturnTypes[getenv('PHP_VERSION')]) ?
@@ -47,53 +55,51 @@ class StubsTypeHintsTest extends AbstractBaseStubsTestCase
         }
         $conditionToCompareWithAttribute = AbstractBaseStubsTestCase::isReflectionTypesExistInAttributes($unifiedReflectionReturnTypes, $typesFromAttribute);
         $testCondition = $conditionToCompareWithSignature || $conditionToCompareWithAttribute;
-        self::assertTrue($testCondition, "Function $functionName has invalid return type.
+        self::assertTrue($testCondition, "Function $functionId has invalid return type.
         Reflection function has return type " . implode('|', $function->returnTypesFromSignature) . ' but stubs has return type ' .
             implode('|', $stubFunction->returnTypesFromSignature) . ' in signature and attribute has types ' .
             implode('|', $typesFromAttribute));
     }
 
-    /**
-     * @dataProvider \StubTests\TestData\Providers\Reflection\ReflectionParametersProvider::functionParametersWithTypeProvider
-     * @throws RuntimeException
-     */
-    public function testFunctionsParametersTypeHints(PHPFunction $function, PHPParameter $parameter)
+    #[DataProviderExternal(ReflectionParametersProvider::class, 'functionParametersWithTypeProvider')]
+    public function testFunctionsParametersTypeHints(?string $functionId, ?string $parameterName)
     {
-        $functionName = $function->name;
-        $phpstormFunction = PhpStormStubsSingleton::getPhpStormStubs()->getFunction($functionName);
+        if (!$functionId && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $reflectionParameter = ReflectionStubsSingleton::getReflectionStubs()->getFunction($functionId, fromReflection: true)->getParameter($parameterName);
+        $phpstormFunction = PhpStormStubsSingleton::getPhpStormStubs()->getFunction($functionId);
         /** @var PHPParameter $stubParameter */
-        $stubParameter = current(array_filter($phpstormFunction->parameters, fn (PHPParameter $stubParameter) => $stubParameter->indexInSignature === $parameter->indexInSignature));
-        self::compareTypeHintsWithReflection($parameter, $stubParameter, $functionName);
-        if (!$parameter->hasMutedProblem(StubProblemType::PARAMETER_REFERENCE)) {
+        $stubParameter = current(array_filter($phpstormFunction->parameters, fn (PHPParameter $stubParameter) => $stubParameter->indexInSignature === $reflectionParameter->indexInSignature));
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $functionId);
+        self::assertTrue($testCondition->result || empty($reflectionParameter->typesFromSignature), $testCondition->message);
+        if (!$reflectionParameter->hasMutedProblem(StubProblemType::PARAMETER_REFERENCE)) {
             self::assertEquals(
-                $parameter->is_passed_by_ref,
+                $reflectionParameter->is_passed_by_ref,
                 $stubParameter->is_passed_by_ref,
-                "Invalid pass by ref $functionName: \$$parameter->name "
+                "Invalid pass by ref $functionId: \$$reflectionParameter->name "
             );
         }
         self::assertEquals(
-            $parameter->is_vararg,
+            $reflectionParameter->is_vararg,
             $stubParameter->is_vararg,
-            "Invalid vararg $functionName: \$$parameter->name "
+            "Invalid vararg $functionId: \$$reflectionParameter->name "
         );
     }
 
-    /**
-     * @dataProvider \StubTests\TestData\Providers\Reflection\ReflectionMethodsProvider::classMethodsWithoutTentitiveReturnTypeProvider
-     * @throws RuntimeException
-     */
-    public function testMethodsReturnTypeHints(PHPClass|PHPInterface $class, PHPMethod $method)
+    #[DataProviderExternal(ReflectionMethodsProvider::class, 'classMethodsWithoutTentitiveReturnTypeProvider')]
+    public function testClassMethodsReturnTypeHints(?string $classId, ?string $methodName)
     {
-        $functionName = $method->name;
-        if ($class instanceof PHPClass) {
-            $stubMethod = PhpStormStubsSingleton::getPhpStormStubs()->getClass($class->name)->getMethod($functionName);
-        } else {
-            $stubMethod = PhpStormStubsSingleton::getPhpStormStubs()->getInterface($class->name)->getMethod($functionName);
+        if (!$classId && !$methodName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
         }
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getClass($classId, fromReflection: true)->getMethod($methodName, fromReflection: true);
+        $class = PhpStormStubsSingleton::getPhpStormStubs()->getClass($classId);
+        $stubMethod = $class->getMethod($methodName);
         $unifiedStubsReturnTypes = [];
         $unifiedStubsAttributesReturnTypes = [];
         $unifiedReflectionReturnTypes = [];
-        self::convertNullableTypesToUnion($method->returnTypesFromSignature, $unifiedReflectionReturnTypes);
+        self::convertNullableTypesToUnion($reflectionMethod->returnTypesFromSignature, $unifiedReflectionReturnTypes);
         if (!empty($stubMethod->returnTypesFromSignature)) {
             self::convertNullableTypesToUnion($stubMethod->returnTypesFromSignature, $unifiedStubsReturnTypes);
         } else {
@@ -114,104 +120,355 @@ class StubsTypeHintsTest extends AbstractBaseStubsTestCase
         }
         $conditionToCompareWithAttribute = AbstractBaseStubsTestCase::isReflectionTypesExistInAttributes($unifiedReflectionReturnTypes, $typesFromAttribute);
         $testCondition = $conditionToCompareWithSignature || $conditionToCompareWithAttribute;
-        self::assertTrue($testCondition, "Method $class->name::$functionName has invalid return type.
-        Reflection method has return type " . implode('|', $method->returnTypesFromSignature) . ' but stubs has return type ' .
+        self::assertTrue($testCondition, "Method $classId::$methodName has invalid return type.
+        Reflection method has return type " . implode('|', $reflectionMethod->returnTypesFromSignature) . ' but stubs has return type ' .
             implode('|', $stubMethod->returnTypesFromSignature) . ' in signature and attribute has types ' .
             implode('|', $typesFromAttribute));
     }
 
-    /**
-     * @dataProvider \StubTests\TestData\Providers\Reflection\ReflectionParametersProvider::methodParametersProvider
-     * @throws RuntimeException
-     */
-    public function testMethodsParametersTypeHints(PHPClass|PHPInterface $reflectionClass, PHPMethod $reflectionMethod, PHPParameter $reflectionParameter)
+    #[DataProviderExternal(ReflectionMethodsProvider::class, 'interfaceMethodsWithoutTentitiveReturnTypeProvider')]
+    public function testInterfaceMethodsReturnTypeHints(?string $classId, ?string $methodName)
     {
-        $className = $reflectionClass->name;
-        $methodName = $reflectionMethod->name;
-        if ($reflectionClass instanceof PHPClass) {
-            $stubMethod = PhpStormStubsSingleton::getPhpStormStubs()->getClass($className)->getMethod($methodName);
-        } else {
-            $stubMethod = PhpStormStubsSingleton::getPhpStormStubs()->getInterface($className)->getMethod($methodName);
+        if (!$classId && !$methodName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
         }
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getInterface($classId, fromReflection: true)->getMethod($methodName, fromReflection: true);
+        $class = PhpStormStubsSingleton::getPhpStormStubs()->getInterface($classId);
+        $stubMethod = $class->getMethod($methodName);
+        $unifiedStubsReturnTypes = [];
+        $unifiedStubsAttributesReturnTypes = [];
+        $unifiedReflectionReturnTypes = [];
+        self::convertNullableTypesToUnion($reflectionMethod->returnTypesFromSignature, $unifiedReflectionReturnTypes);
+        if (!empty($stubMethod->returnTypesFromSignature)) {
+            self::convertNullableTypesToUnion($stubMethod->returnTypesFromSignature, $unifiedStubsReturnTypes);
+        } else {
+            foreach ($stubMethod->returnTypesFromAttribute as $languageVersion => $listOfTypes) {
+                $unifiedStubsAttributesReturnTypes[$languageVersion] = [];
+                self::convertNullableTypesToUnion($listOfTypes, $unifiedStubsAttributesReturnTypes[$languageVersion]);
+            }
+        }
+        $conditionToCompareWithSignature = AbstractBaseStubsTestCase::isReflectionTypesMatchSignature(
+            $unifiedReflectionReturnTypes,
+            $unifiedStubsReturnTypes
+        );
+        $typesFromAttribute = [];
+        if (!empty($unifiedStubsAttributesReturnTypes)) {
+            $typesFromAttribute = !empty($unifiedStubsAttributesReturnTypes[getenv('PHP_VERSION')]) ?
+                $unifiedStubsAttributesReturnTypes[getenv('PHP_VERSION')] :
+                $unifiedStubsAttributesReturnTypes['default'];
+        }
+        $conditionToCompareWithAttribute = AbstractBaseStubsTestCase::isReflectionTypesExistInAttributes($unifiedReflectionReturnTypes, $typesFromAttribute);
+        $testCondition = $conditionToCompareWithSignature || $conditionToCompareWithAttribute;
+        self::assertTrue($testCondition, "Method $classId::$methodName has invalid return type.
+        Reflection method has return type " . implode('|', $reflectionMethod->returnTypesFromSignature) . ' but stubs has return type ' .
+            implode('|', $stubMethod->returnTypesFromSignature) . ' in signature and attribute has types ' .
+            implode('|', $typesFromAttribute));
+    }
+
+    #[DataProviderExternal(ReflectionMethodsProvider::class, 'enumMethodsWithoutTentitiveReturnTypeProvider')]
+    public function testEnumMethodsReturnTypeHints(?string $classId, ?string $methodName)
+    {
+        if (!$classId && !$methodName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getEnum($classId, fromReflection: true)->getMethod($methodName, fromReflection: true);
+        $class = PhpStormStubsSingleton::getPhpStormStubs()->getEnum($classId);
+        $stubMethod = $class->getMethod($methodName);
+        $unifiedStubsReturnTypes = [];
+        $unifiedStubsAttributesReturnTypes = [];
+        $unifiedReflectionReturnTypes = [];
+        self::convertNullableTypesToUnion($reflectionMethod->returnTypesFromSignature, $unifiedReflectionReturnTypes);
+        if (!empty($stubMethod->returnTypesFromSignature)) {
+            self::convertNullableTypesToUnion($stubMethod->returnTypesFromSignature, $unifiedStubsReturnTypes);
+        } else {
+            foreach ($stubMethod->returnTypesFromAttribute as $languageVersion => $listOfTypes) {
+                $unifiedStubsAttributesReturnTypes[$languageVersion] = [];
+                self::convertNullableTypesToUnion($listOfTypes, $unifiedStubsAttributesReturnTypes[$languageVersion]);
+            }
+        }
+        $conditionToCompareWithSignature = AbstractBaseStubsTestCase::isReflectionTypesMatchSignature(
+            $unifiedReflectionReturnTypes,
+            $unifiedStubsReturnTypes
+        );
+        $typesFromAttribute = [];
+        if (!empty($unifiedStubsAttributesReturnTypes)) {
+            $typesFromAttribute = !empty($unifiedStubsAttributesReturnTypes[getenv('PHP_VERSION')]) ?
+                $unifiedStubsAttributesReturnTypes[getenv('PHP_VERSION')] :
+                $unifiedStubsAttributesReturnTypes['default'];
+        }
+        $conditionToCompareWithAttribute = AbstractBaseStubsTestCase::isReflectionTypesExistInAttributes($unifiedReflectionReturnTypes, $typesFromAttribute);
+        $testCondition = $conditionToCompareWithSignature || $conditionToCompareWithAttribute;
+        self::assertTrue($testCondition, "Method $classId::$methodName has invalid return type.
+        Reflection method has return type " . implode('|', $reflectionMethod->returnTypesFromSignature) . ' but stubs has return type ' .
+            implode('|', $stubMethod->returnTypesFromSignature) . ' in signature and attribute has types ' .
+            implode('|', $typesFromAttribute));
+    }
+
+    #[DataProviderExternal(ReflectionParametersProvider::class, 'classMethodParametersWithTypeHintProvider')]
+    public function testClassMethodsParametersTypeHints(?string $classId, ?string $methodName, ?string $parameterName)
+    {
+        if (!$classId && !$methodName && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $reflectionParameter = ReflectionStubsSingleton::getReflectionStubs()->getClass($classId, fromReflection: true)->getMethod($methodName, fromReflection: true)->getParameter($parameterName);
+        $stubMethod = PhpStormStubsSingleton::getPhpStormStubs()->getClass($classId)->getMethod($methodName);
         /** @var PHPParameter $stubParameter */
         $stubParameter = current(array_filter(
             $stubMethod->parameters,
             fn (PHPParameter $stubParameter) => $stubParameter->name === $reflectionParameter->name
         ));
         self::assertNotFalse($stubParameter, "Parameter $$reflectionParameter->name not found at 
-        $reflectionClass->name::$stubMethod->name(" .
+        $classId::$stubMethod->name(" .
             StubsParameterNamesTest::printParameters($stubMethod->parameters) . ')');
-        self::compareTypeHintsWithReflection($reflectionParameter, $stubParameter, $methodName);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $methodName);
+        self::assertTrue($testCondition->result, $testCondition->message);
         if (!$reflectionParameter->hasMutedProblem(StubProblemType::PARAMETER_REFERENCE)) {
             self::assertEquals(
                 $reflectionParameter->is_passed_by_ref,
                 $stubParameter->is_passed_by_ref,
-                "Invalid pass by ref $className::$methodName: \$$reflectionParameter->name "
+                "Invalid pass by ref $classId::$methodName: \$$reflectionParameter->name "
             );
         }
         self::assertEquals(
             $reflectionParameter->is_vararg,
             $stubParameter->is_vararg,
-            "Invalid pass by ref $className::$methodName: \$$reflectionParameter->name "
+            "Invalid pass by ref $classId::$methodName: \$$reflectionParameter->name "
         );
     }
 
-    /**
-     * @dataProvider \StubTests\TestData\Providers\Stubs\StubsParametersProvider::parametersForAllowedScalarTypeHintTestsProvider
-     * @throws RuntimeException
-     */
-    public function testMethodScalarTypeHintsInParametersMatchReflection(PHPClass|PHPInterface $class, PHPMethod $stubMethod, PHPParameter $stubParameter)
+    #[DataProviderExternal(ReflectionParametersProvider::class, 'interfaceMethodParametersWithTypeHintProvider')]
+    public function testInterfaceMethodsParametersTypeHints(?string $classId, ?string $methodName, ?string $parameterName)
     {
-        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getClass($class->name)->getMethod($stubMethod->name);
-        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
-        $reflectionParameter = array_pop($reflectionParameters);
-        self::compareTypeHintsWithReflection($reflectionParameter, $stubParameter, $stubMethod->name);
+        if (!$classId && !$methodName && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $reflectionParameter = ReflectionStubsSingleton::getReflectionStubs()->getInterface($classId, fromReflection: true)->getMethod($methodName, fromReflection: true)->getParameter($parameterName);
+        $stubMethod = PhpStormStubsSingleton::getPhpStormStubs()->getInterface($classId)->getMethod($methodName);
+        /** @var PHPParameter $stubParameter */
+        $stubParameter = current(array_filter(
+            $stubMethod->parameters,
+            fn (PHPParameter $stubParameter) => $stubParameter->name === $reflectionParameter->name
+        ));
+        self::assertNotFalse($stubParameter, "Parameter $$reflectionParameter->name not found at 
+        $classId::$stubMethod->name(" .
+            StubsParameterNamesTest::printParameters($stubMethod->parameters) . ')');
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $methodName);
+        self::assertTrue($testCondition->result, $testCondition->message);
+        if (!$reflectionParameter->hasMutedProblem(StubProblemType::PARAMETER_REFERENCE)) {
+            self::assertEquals(
+                $reflectionParameter->is_passed_by_ref,
+                $stubParameter->is_passed_by_ref,
+                "Invalid pass by ref $classId::$methodName: \$$reflectionParameter->name "
+            );
+        }
+        self::assertEquals(
+            $reflectionParameter->is_vararg,
+            $stubParameter->is_vararg,
+            "Invalid pass by ref $classId::$methodName: \$$reflectionParameter->name "
+        );
     }
 
-    /**
-     * @dataProvider \StubTests\TestData\Providers\Stubs\StubsParametersProvider::parametersForAllowedNullableTypeHintTestsProvider
-     * @throws RuntimeException
-     */
-    public function testMethodNullableTypeHintsInParametersMatchReflection(PHPClass|PHPInterface $class, PHPMethod $stubMethod, PHPParameter $stubParameter)
+    #[DataProviderExternal(ReflectionParametersProvider::class, 'enumMethodParametersWithTypeHintProvider')]
+    public function testEnumMethodsParametersTypeHints(?string $classId, ?string $methodName, ?string $parameterName)
     {
-        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getClass($class->name)->getMethod($stubMethod->name);
-        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
-        $reflectionParameter = array_pop($reflectionParameters);
-        self::compareTypeHintsWithReflection($reflectionParameter, $stubParameter, $stubMethod->name);
+        if (!$classId && !$methodName && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $reflectionParameter = ReflectionStubsSingleton::getReflectionStubs()->getEnum($classId, fromReflection: true)->getMethod($methodName, fromReflection: true)->getParameter($parameterName);
+        $stubMethod = PhpStormStubsSingleton::getPhpStormStubs()->getEnum($classId)->getMethod($methodName);
+        /** @var PHPParameter $stubParameter */
+        $stubParameter = current(array_filter(
+            $stubMethod->parameters,
+            fn (PHPParameter $stubParameter) => $stubParameter->name === $reflectionParameter->name
+        ));
+        self::assertNotFalse($stubParameter, "Parameter $$reflectionParameter->name not found at 
+        $classId::$stubMethod->name(" .
+            StubsParameterNamesTest::printParameters($stubMethod->parameters) . ')');
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $methodName);
+        self::assertTrue($testCondition->result, $testCondition->message);
+        if (!$reflectionParameter->hasMutedProblem(StubProblemType::PARAMETER_REFERENCE)) {
+            self::assertEquals(
+                $reflectionParameter->is_passed_by_ref,
+                $stubParameter->is_passed_by_ref,
+                "Invalid pass by ref $classId::$methodName: \$$reflectionParameter->name "
+            );
+        }
+        self::assertEquals(
+            $reflectionParameter->is_vararg,
+            $stubParameter->is_vararg,
+            "Invalid pass by ref $classId::$methodName: \$$reflectionParameter->name "
+        );
     }
 
-    /**
-     * @dataProvider \StubTests\TestData\Providers\Stubs\StubsParametersProvider::parametersForAllowedUnionTypeHintTestsProvider
-     * @throws RuntimeException
-     */
-    public function testMethodUnionTypeHintsInParametersMatchReflection(PHPClass|PHPInterface $class, PHPMethod $stubMethod, PHPParameter $stubParameter)
+    #[DataProviderExternal(StubsParametersProvider::class, 'classMethodsParametersForAllowedScalarTypeHintTestsProvider')]
+    public function testClassMethodScalarTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
     {
-        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getClass($class->name)->getMethod($stubMethod->name);
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsClass = PhpStormStubsSingleton::getPhpStormStubs()->getClassByHash($classHash);
+        $stubsMethod = $stubsClass->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getClass($stubsClass->id, fromReflection: true)->getMethod($stubsMethod->name, fromReflection: true);
         $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
         $reflectionParameter = array_pop($reflectionParameters);
-        self::compareTypeHintsWithReflection($reflectionParameter, $stubParameter, $stubMethod->name);
+        if (!$reflectionParameter) {
+            self::fail("Parameter with name $parameterName not found in reflection");
+        } else {
+            $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+            self::assertTrue($testCondition->result, $testCondition->message);
+        }
     }
 
-    /**
-     * @dataProvider \StubTests\TestData\Providers\Stubs\StubMethodsProvider::allFunctionAndMethodsWithReturnTypeHintsProvider
-     * @throws Exception
-     */
-    public static function testSignatureTypeHintsConformPhpDocInMethods(PHPFunction|PHPMethod $method)
+    #[DataProviderExternal(StubsParametersProvider::class, 'interfaceMethodsParametersForAllowedScalarTypeHintTestsProvider')]
+    public function testInterfaceMethodScalarTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
     {
-        $functionName = $method->name;
-        $unifiedPhpDocTypes = array_map(function (string $type) use ($method) {
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsInterface = PhpStormStubsSingleton::getPhpStormStubs()->getInterfaceByHash($classHash);
+        $stubsMethod = $stubsInterface->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getInterface($stubsInterface->id, fromReflection: true)->getMethod($stubsMethod->name, fromReflection: true);
+        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
+        $reflectionParameter = array_pop($reflectionParameters);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+        self::assertTrue($testCondition->result, $testCondition->message);
+    }
+
+    #[DataProviderExternal(StubsParametersProvider::class, 'enumMethodsParametersForAllowedScalarTypeHintTestsProvider')]
+    public function testEnumMethodScalarTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
+    {
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsEnum = PhpStormStubsSingleton::getPhpStormStubs()->getEnumByHash($classHash);
+        $stubsMethod = $stubsEnum->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getEnum($stubsEnum->id, fromReflection: true)->getMethod($stubsMethod->name, fromReflection: true);
+        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
+        $reflectionParameter = array_pop($reflectionParameters);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+        self::assertTrue($testCondition->result, $testCondition->message);
+    }
+
+    #[DataProviderExternal(StubsParametersProvider::class, 'classMethodsParametersForAllowedNullableTypeHintTestsProvider')]
+    public function testClassMethodNullableTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
+    {
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsClass = PhpStormStubsSingleton::getPhpStormStubs()->getClassByHash($classHash);
+        $stubsMethod = $stubsClass->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionClass = ReflectionStubsSingleton::getReflectionStubs()->getClass($stubsClass->id, fromReflection: true);
+        $reflectionMethod = $reflectionClass->getMethod($stubsMethod->name);
+        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
+        $reflectionParameter = array_pop($reflectionParameters);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+        self::assertTrue($testCondition->result, $testCondition->message);
+    }
+
+    #[DataProviderExternal(StubsParametersProvider::class, 'interfaceMethodsParametersForAllowedNullableTypeHintTestsProvider')]
+    public function testInterfaceMethodNullableTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
+    {
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsInterface = PhpStormStubsSingleton::getPhpStormStubs()->getInterfaceByHash($classHash);
+        $stubsMethod = $stubsInterface->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getInterface($stubsInterface->id, fromReflection: true)->getMethod($stubsMethod->name, fromReflection: true);
+        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
+        $reflectionParameter = array_pop($reflectionParameters);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+        self::assertTrue($testCondition->result, $testCondition->message);
+    }
+
+    #[DataProviderExternal(StubsParametersProvider::class, 'enumMethodsParametersForAllowedNullableTypeHintTestsProvider')]
+    public function testEnumMethodNullableTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
+    {
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsEnum = PhpStormStubsSingleton::getPhpStormStubs()->getEnumByHash($classHash);
+        $stubsMethod = $stubsEnum->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getEnum($stubsEnum->id, fromReflection: true)->getMethod($stubsMethod->name, fromReflection: true);
+        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
+        $reflectionParameter = array_pop($reflectionParameters);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+        self::assertTrue($testCondition->result, $testCondition->message);
+    }
+
+    #[DataProviderExternal(StubsParametersProvider::class, 'classMethodsParametersForAllowedUnionTypeHintTestsProvider')]
+    public function testClassMethodUnionTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
+    {
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsClass = PhpStormStubsSingleton::getPhpStormStubs()->getClassByHash($classHash);
+        $stubsMethod = $stubsClass->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getClass($stubsClass->id, fromReflection: true)->getMethod($stubsMethod->name, fromReflection: true);
+        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
+        $reflectionParameter = array_pop($reflectionParameters);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+        self::assertTrue($testCondition->result, $testCondition->message);
+    }
+
+    #[DataProviderExternal(StubsParametersProvider::class, 'interfaceMethodsParametersForAllowedUnionTypeHintTestsProvider')]
+    public function testInterfaceMethodUnionTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
+    {
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsInterface = PhpStormStubsSingleton::getPhpStormStubs()->getInterfaceByHash($classHash);
+        $stubsMethod = $stubsInterface->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getInterface($stubsInterface->id, fromReflection: true)->getMethod($stubsMethod->name, fromReflection: true);
+        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
+        $reflectionParameter = array_pop($reflectionParameters);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+        self::assertTrue($testCondition->result, $testCondition->message);
+    }
+
+    #[DataProviderExternal(StubsParametersProvider::class, 'enumMethodsParametersForAllowedUnionTypeHintTestsProvider')]
+    public function testEnumMethodUnionTypeHintsInParametersMatchReflection(?string $classHash, ?string $methodHash, ?string $parameterName)
+    {
+        if (!$classHash && !$methodHash && !$parameterName) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $stubsEnum = PhpStormStubsSingleton::getPhpStormStubs()->getEnumByHash($classHash);
+        $stubsMethod = $stubsEnum->getMethodByHash($methodHash);
+        $stubParameter = $stubsMethod->getParameter($parameterName);
+        $reflectionMethod = ReflectionStubsSingleton::getReflectionStubs()->getEnum($stubsEnum->id, fromReflection: true)->getMethod($stubsMethod->name, fromReflection: true);
+        $reflectionParameters = array_filter($reflectionMethod->parameters, fn (PHPParameter $parameter) => $parameter->name === $stubParameter->name);
+        $reflectionParameter = array_pop($reflectionParameters);
+        $testCondition = self::typeHintsMatchReflection($reflectionParameter, $stubParameter, $stubsMethod->name);
+        self::assertTrue($testCondition->result, $testCondition->message);
+    }
+
+    #[DataProviderExternal(StubMethodsProvider::class, 'allFunctionWithReturnTypeHintsProvider')]
+    public static function testSignatureTypeHintsConformPhpDocInFunctions(string $functionId)
+    {
+        $function = PhpStormStubsSingleton::getPhpStormStubs()->getFunction($functionId, shouldSuitCurrentPhpVersion: false);
+        $unifiedPhpDocTypes = array_map(function (string $type) use ($function) {
             $typeParts = explode('\\', $type);
             $typeName = end($typeParts);
-            foreach ($method->templateTypes as $templateType) {
+            foreach ($function->templateTypes as $templateType) {
                 if ($typeName === $templateType) {
                     $typeName = 'object';
                 }
             }
 
-            // replace array notations like int[] or array<string,mixed> to match the array type
-            return preg_replace(['/\w+\[]/', '/array<[a-z,\s]+>/'], 'array', $typeName);
-        }, $method->returnTypesFromPhpDoc);
-        $unifiedSignatureTypes = $method->returnTypesFromSignature;
+            // replace array notations like int[] or array<string,mixed> or array{name:type} to match the array type
+            return preg_replace(['/\w+\[]/', '/array[{<][a-z,\s:|_]+[>}]/'], 'array', $typeName);
+        }, $function->returnTypesFromPhpDoc);
+        $unifiedSignatureTypes = array_map(function (string $type) {
+            $typeParts = explode('\\', $type);
+            return end($typeParts);
+        }, $function->returnTypesFromSignature);
         if (count($unifiedSignatureTypes) === 1) {
             $type = array_pop($unifiedSignatureTypes);
             if (str_contains($type, '?')) {
@@ -225,15 +482,149 @@ class StubsTypeHintsTest extends AbstractBaseStubsTestCase
         self::assertSameSize(
             $unifiedSignatureTypes,
             $typesIntersection,
-            $method instanceof PHPMethod ? "Method $method->parentName::" : 'Function ' .
-                "$functionName has mismatch in phpdoc return type and signature return type\n
-                signature has " . implode('|', $unifiedSignatureTypes) . "\n
-                but phpdoc has " . implode('|', $unifiedPhpDocTypes)
+            'Function ' . "$functionId has mismatch in phpdoc return type and signature return type. 
+            Signature has " . implode('|', $unifiedSignatureTypes) . " but phpdoc has " . implode('|', $unifiedPhpDocTypes)
         );
     }
 
-    private static function compareTypeHintsWithReflection(PHPParameter $parameter, PHPParameter $stubParameter, ?string $functionName): void
+    #[DataProviderExternal(StubMethodsProvider::class, 'allClassesMethodsWithReturnTypeHintsProvider')]
+    public static function testClassesMethodsSignatureTypeHintsConformPhpDocInMethods(string $classId, string $functionId)
     {
+        $stubsClass = PhpStormStubsSingleton::getPhpStormStubs()->getClass($classId, shouldSuitCurrentPhpVersion: false);
+        $classTemplateTypes = $stubsClass->templateTypes;
+        $function = $stubsClass->getMethod($functionId, false);
+        $unifiedPhpDocTypes = array_map(function (string $type) use ($function, $classTemplateTypes) {
+            $typeParts = explode('\\', $type);
+            $typeName = end($typeParts);
+            foreach ($function->templateTypes as $templateType) {
+                if ($typeName === $templateType) {
+                    $typeName = 'object';
+                }
+            }
+            foreach ($classTemplateTypes as $templateType) {
+                if ($typeName === $templateType) {
+                    $typeName = 'object';
+                }
+            }
+
+            // replace array notations like int[] or array<string,mixed> or array{name:type} to match the array type
+            return preg_replace(['/\w+\[]/', '/array[{<][a-z,\s:|_]+[>}]/'], 'array', $typeName);
+        }, $function->returnTypesFromPhpDoc);
+        $unifiedSignatureTypes = array_map(function (string $type) {
+            $typeParts = explode('\\', $type);
+            return end($typeParts);
+        }, $function->returnTypesFromSignature);
+        if (count($unifiedSignatureTypes) === 1) {
+            $type = array_pop($unifiedSignatureTypes);
+            if (str_contains($type, '?')) {
+                $unifiedSignatureTypes[] = 'null';
+            }
+            $typeParts = explode('\\', ltrim($type, '?'));
+            $typeName = end($typeParts);
+            $unifiedSignatureTypes[] = $typeName;
+        }
+        $typesIntersection = array_intersect($unifiedSignatureTypes, $unifiedPhpDocTypes);
+        self::assertSameSize(
+            $unifiedSignatureTypes,
+            $typesIntersection,
+            "Method $classId::$functionId has mismatch in phpdoc return type and signature return type. 
+            Signature has " . implode('|', $unifiedSignatureTypes) . " but phpdoc has " . implode('|', $unifiedPhpDocTypes)
+        );
+    }
+
+    #[DataProviderExternal(StubMethodsProvider::class, 'allInterfacesMethodsWithReturnTypeHintsProvider')]
+    public static function testInterfacesMethodsSignatureTypeHintsConformPhpDocInMethods(string $classId, string $functionId)
+    {
+        $function = PhpStormStubsSingleton::getPhpStormStubs()->getInterface($classId, shouldSuitCurrentPhpVersion: false)->getMethod($functionId, false);
+        $unifiedPhpDocTypes = array_map(function (string $type) use ($function) {
+            $typeParts = explode('\\', $type);
+            $typeName = end($typeParts);
+            foreach ($function->templateTypes as $templateType) {
+                if ($typeName === $templateType) {
+                    $typeName = 'object';
+                }
+            }
+
+            // replace array notations like int[] or array<string,mixed> or array{name:type} to match the array type
+            return preg_replace(['/\w+\[]/', '/array[{<][a-z,\s:|_]+[>}]/'], 'array', $typeName);
+        }, $function->returnTypesFromPhpDoc);
+        $unifiedSignatureTypes = array_map(function (string $type) {
+            $typeParts = explode('\\', $type);
+            return end($typeParts);
+        }, $function->returnTypesFromSignature);
+        if (count($unifiedSignatureTypes) === 1) {
+            $type = array_pop($unifiedSignatureTypes);
+            if (str_contains($type, '?')) {
+                $unifiedSignatureTypes[] = 'null';
+            }
+            $typeParts = explode('\\', ltrim($type, '?'));
+            $typeName = end($typeParts);
+            $unifiedSignatureTypes[] = $typeName;
+        }
+        $typesIntersection = array_intersect($unifiedSignatureTypes, $unifiedPhpDocTypes);
+        self::assertSameSize(
+            $unifiedSignatureTypes,
+            $typesIntersection,
+            "Method $classId::$functionId has mismatch in phpdoc return type and signature return type. 
+            Signature has " . implode('|', $unifiedSignatureTypes) . " but phpdoc has " . implode('|', $unifiedPhpDocTypes)
+        );
+    }
+
+    #[DataProviderExternal(StubMethodsProvider::class, 'allEnumsMethodsWithReturnTypeHintsProvider')]
+    public function testEnumsMethodsSignatureTypeHintsConformPhpDocInMethods(?string $classId, ?string $functionId)
+    {
+        if (!$classId && !$functionId) {
+            self::markTestSkipped($this->emptyDataSetMessage);
+        }
+        $function = PhpStormStubsSingleton::getPhpStormStubs()->getEnum($classId)->getMethod($functionId);
+        $unifiedPhpDocTypes = array_map(function (string $type) use ($function) {
+            $typeParts = explode('\\', $type);
+            $typeName = end($typeParts);
+            foreach ($function->templateTypes as $templateType) {
+                if ($typeName === $templateType) {
+                    $typeName = 'object';
+                }
+            }
+
+            // replace array notations like int[] or array<string,mixed> or array{name:type} to match the array type
+            return preg_replace(['/\w+\[]/', '/array[{<][a-z,\s:|_]+[>}]/'], 'array', $typeName);
+        }, $function->returnTypesFromPhpDoc);
+        $unifiedSignatureTypes = array_map(function (string $type) {
+            $typeParts = explode('\\', $type);
+            return end($typeParts);
+        }, $function->returnTypesFromSignature);
+        if (count($unifiedSignatureTypes) === 1) {
+            $type = array_pop($unifiedSignatureTypes);
+            if (str_contains($type, '?')) {
+                $unifiedSignatureTypes[] = 'null';
+            }
+            $typeParts = explode('\\', ltrim($type, '?'));
+            $typeName = end($typeParts);
+            $unifiedSignatureTypes[] = $typeName;
+        }
+        $typesIntersection = array_intersect($unifiedSignatureTypes, $unifiedPhpDocTypes);
+        self::assertSameSize(
+            $unifiedSignatureTypes,
+            $typesIntersection,
+            "Method $classId::$functionId has mismatch in phpdoc return type and signature return type. 
+            Signature has " . implode('|', $unifiedSignatureTypes) . " but phpdoc has " . implode('|', $unifiedPhpDocTypes)
+        );
+    }
+
+    /**
+     * @return object{result:bool, message:string}
+     */
+    private static function typeHintsMatchReflection(?PHPParameter $parameter, ?PHPParameter $stubParameter, string $functionName): stdClass
+    {
+        if (!$parameter || !$stubParameter) {
+            $return = new stdClass();
+            $return->result = false;
+            $return->message = match (null) {
+                $parameter => "Parameter not found in reflection function '$functionName'",
+                $stubParameter => "Parameter not found in stub function '$functionName'"
+            };
+            return $return;
+        }
         $unifiedStubsParameterTypes = [];
         $unifiedStubsAttributesParameterTypes = [];
         $unifiedReflectionParameterTypes = [];
@@ -255,9 +646,12 @@ class StubsTypeHintsTest extends AbstractBaseStubsTestCase
                 $testCondition = AbstractBaseStubsTestCase::isReflectionTypesExistInAttributes($unifiedReflectionParameterTypes, $typesFromAttribute);
             }
         }
-        self::assertTrue($testCondition, "Type mismatch $functionName: \$$parameter->name \n
+        $return = new stdClass();
+        $return->result = $testCondition;
+        $return->message = "Type mismatch $functionName: \$$parameter->name \n
         Reflection parameter $parameter->name with index $parameter->indexInSignature has type '" . implode('|', $unifiedReflectionParameterTypes) .
             "' but stub parameter $stubParameter->name with index $stubParameter->indexInSignature has type '" . implode('|', $unifiedStubsParameterTypes) . "' in signature and " .
-            implode('|', $typesFromAttribute) . ' in attribute');
+            implode('|', $typesFromAttribute) . ' in attribute';
+        return $return;
     }
 }

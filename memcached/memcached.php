@@ -686,6 +686,7 @@ class Memcached
      * A flag for <b>Memcached::get()</b>, <b>Memcached::getMulti()</b> and
      * <b>Memcached::getMultiByKey()</b> to ensure that the CAS token values are returned as well.
      * @link https://php.net/manual/en/memcached.constants.php
+     * @since 3.0.0
      */
     public const GET_EXTENDED = 2;
     public const GET_ERROR_RETURN_VALUE = false;
@@ -1491,6 +1492,14 @@ class Memcached
      * @return bool the true if instance is recently created, false otherwise.
      */
     public function isPristine() {}
+
+    /**
+     * (PECL memcached &gt;= 3.2.0)<br/>
+     * Check if the given key is valid.
+     * @param string $key
+     * @return bool
+     */
+    public function checkKey($key) {}
 
     /**
      * Flush and send buffered commands

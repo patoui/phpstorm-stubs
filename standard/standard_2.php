@@ -212,7 +212,7 @@ function chr(int $codepoint): string {}
  * @param string $character <p>
  * A character.
  * </p>
- * @return int the ASCII value as an integer.
+ * @return int<0, 255> the ASCII value as an integer.
  */
 #[Pure]
 function ord(string $character): int {}
@@ -295,7 +295,7 @@ function str_pad(string $string, int $length, string $pad_string = " ", int $pad
  * @see rtrim()
  */
 #[Pure]
-function chop(string $string, string $characters): string {}
+function chop(string $string, string $characters = " \n\r\t\v\0"): string {}
 
 /**
  * Alias:
@@ -332,13 +332,17 @@ function strchr(string $haystack, string $needle, bool $before_needle = false): 
  * (- or +) to be used on a number. By default, only the - sign is used
  * on a number if it's negative. This specifier forces positive numbers
  * to have the + sign attached as well, and was added in PHP 4.3.0.</p>
- * @param string|int|float ...$values [optional] <p>
+ * @param string|int|float ...$values <p>
  * </p>
  * @return string a string produced according to the formatting string
  * format.
  */
 #[Pure]
-function sprintf(string $format, mixed ...$values): string {}
+function sprintf(
+    string $format,
+    #[PhpStormStubsElementAvailable(from: '5.3', to: '5.6')] $values,
+    mixed ...$values
+): string {}
 
 /**
  * Output a formatted string
@@ -656,7 +660,7 @@ function unlink(string $filename, $context): bool {}
  * exec.
  * </p>
  * @param int &$result_code [optional] <p>
- * If the return_var argument is present
+ * If the result_code argument is present
  * along with the output argument, then the
  * return status of the executed command will be written to this
  * variable.
@@ -678,7 +682,7 @@ function exec(string $command, &$output, &$result_code): string|false {}
  * The command that will be executed.
  * </p>
  * @param int &$result_code [optional] <p>
- * If the return_var argument is present, then the
+ * If the result_code argument is present, then the
  * return status of the executed command will be written to this
  * variable.
  * </p>
@@ -716,11 +720,12 @@ function escapeshellarg(string $arg): string {}
  * The command that will be executed.
  * </p>
  * @param int &$result_code [optional] <p>
- * If the return_var argument is present, the
+ * If the result_code argument is present, the
  * return status of the Unix command will be placed here.
  * </p>
- * @return bool|null
+ * @return bool|null null on success or false on failure.
  */
+#[LanguageLevelTypeAware(['8.2' => 'null|false'], default: 'null|bool')]
 function passthru(string $command, &$result_code): ?bool {}
 
 /**
@@ -924,81 +929,6 @@ function proc_get_status($process) {}
  * an error of level E_WARNING is also generated.
  */
 function proc_nice(int $priority): bool {}
-
-/**
- * Generate a random integer
- * @link https://php.net/manual/en/function.rand.php
- * @param int $min
- * @param int $max [optional]
- * @return int A pseudo random value between min
- * (or 0) and max (or getrandmax, inclusive).
- */
-function rand(int $min = null, int $max): int {}
-
-/**
- * Seed the random number generator
- * <p><strong>Note</strong>: As of PHP 7.1.0, {@see srand()} has been made
- * an alias of {@see mt_srand()}.
- * </p>
- * @link https://php.net/manual/en/function.srand.php
- * @param int $seed <p>
- * Optional seed value
- * </p>
- * @param int $mode [optional] <p>
- * Use one of the following constants to specify the implementation of the algorithm to use.
- * </p>
- * @return void
- */
-function srand(
-    int $seed = 0,
-    #[PhpStormStubsElementAvailable(from: '7.1')] int $mode = MT_RAND_MT19937
-): void {}
-
-/**
- * Show largest possible random value
- * @link https://php.net/manual/en/function.getrandmax.php
- * @return int The largest possible random value returned by rand
- */
-#[Pure]
-function getrandmax(): int {}
-
-/**
- * Generate a random value via the Mersenne Twister Random Number Generator
- * @link https://php.net/manual/en/function.mt-rand.php
- * @param int $min <p>
- * Optional lowest value to be returned (default: 0)
- * </p>
- * @param int $max [optional] <p>
- * Optional highest value to be returned (default: mt_getrandmax())
- * </p>
- * @return int A random integer value between min (or 0)
- * and max (or mt_getrandmax, inclusive)
- */
-function mt_rand(int $min = null, int $max): int {}
-
-/**
- * Seeds the Mersenne Twister Random Number Generator
- * @link https://php.net/manual/en/function.mt-srand.php
- * @param int $seed <p>
- * An optional seed value
- * </p>
- * @param int $mode [optional] <p>
- * Use one of the following constants to specify the implementation of the algorithm to use.
- * </p>
- * @return void
- */
-function mt_srand(
-    int $seed = 0,
-    #[PhpStormStubsElementAvailable(from: '7.1')] int $mode = MT_RAND_MT19937
-): void {}
-
-/**
- * Show largest possible random value
- * @link https://php.net/manual/en/function.mt-getrandmax.php
- * @return int the maximum random value returned by mt_rand
- */
-#[Pure]
-function mt_getrandmax(): int {}
 
 /**
  * Get port number associated with an Internet service and protocol

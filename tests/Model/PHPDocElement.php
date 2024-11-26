@@ -1,16 +1,15 @@
 <?php
-declare(strict_types=1);
 
 namespace StubTests\Model;
 
 use Exception;
 use phpDocumentor\Reflection\DocBlock\Tags\Deprecated;
-use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 use phpDocumentor\Reflection\DocBlock\Tags\Link;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlock\Tags\See;
 use phpDocumentor\Reflection\DocBlock\Tags\Since;
+use phpDocumentor\Reflection\DocBlock\Tags\Template;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use PhpParser\Node;
 use StubTests\Model\Tags\RemovedTag;
@@ -77,7 +76,7 @@ trait PHPDocElement
      * @var bool
      */
     public $hasInternalMetaTag = false;
-    public $templateTypes = null;
+    public $templateTypes = [];
 
     protected function collectTags(Node $node)
     {
@@ -85,6 +84,7 @@ trait PHPDocElement
             try {
                 $text = $node->getDocComment()->getText();
                 $text = preg_replace("/int\<\w+,\s*\w+\>/", "int", $text);
+                $text = preg_replace("/callable\(\w+(,\s*\w+)*\)(:\s*\w*)?/", "callable", $text);
                 $this->phpdoc = $text;
                 $phpDoc = DocFactoryProvider::getDocFactory()->create($text);
                 $tags = $phpDoc->getTags();
@@ -102,9 +102,9 @@ trait PHPDocElement
                 $this->hasInternalMetaTag = $phpDoc->hasTag('meta');
                 $this->hasInheritDocTag = $phpDoc->hasTag('inheritdoc') || $phpDoc->hasTag('inheritDoc') ||
                     stripos($phpDoc->getSummary(), 'inheritdoc') > 0;
-                $this->templateTypes = array_map(
-                    function (Generic $tag) {
-                        return preg_split("/\W/", $tag->getDescription()->getBodyTemplate())[0];
+                $this->templateTypes += array_map(
+                    function (Template $tag) {
+                        return $tag->getTemplateName();
                     },
                     $phpDoc->getTagsByName('template')
                 );

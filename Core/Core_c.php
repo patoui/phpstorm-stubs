@@ -25,9 +25,9 @@ interface iterable {}
  *
  * @link https://php.net/manual/en/class.traversable.php
  * @template TKey
- * @template TValue
+ * @template-covariant TValue
  *
- * @template-implements iterable<TKey, TValue>
+ * @template-extends iterable<TKey, TValue>
  */
 interface Traversable extends iterable {}
 
@@ -35,8 +35,8 @@ interface Traversable extends iterable {}
  * Interface to create an external Iterator.
  * @link https://php.net/manual/en/class.iteratoraggregate.php
  * @template TKey
- * @template TValue
- * @template-implements Traversable<TKey, TValue>
+ * @template-covariant TValue
+ * @template-extends Traversable<TKey, TValue>
  */
 interface IteratorAggregate extends Traversable
 {
@@ -56,8 +56,8 @@ interface IteratorAggregate extends Traversable
  * themselves internally.
  * @link https://php.net/manual/en/class.iterator.php
  * @template TKey
- * @template TValue
- * @template-implements Traversable<TKey, TValue>
+ * @template-covariant TValue
+ * @template-extends Traversable<TKey, TValue>
  */
 interface Iterator extends Traversable
 {
@@ -114,7 +114,7 @@ interface ArrayAccess
     /**
      * Whether a offset exists
      * @link https://php.net/manual/en/arrayaccess.offsetexists.php
-     * @param mixed $offset <p>
+     * @param TKey $offset <p>
      * An offset to check for.
      * </p>
      * @return bool true on success or false on failure.
@@ -128,7 +128,7 @@ interface ArrayAccess
     /**
      * Offset to retrieve
      * @link https://php.net/manual/en/arrayaccess.offsetget.php
-     * @param mixed $offset <p>
+     * @param TKey $offset <p>
      * The offset to retrieve.
      * </p>
      * @return TValue Can return all value types.
@@ -583,6 +583,11 @@ class DivisionByZeroError extends ArithmeticError {}
 class UnhandledMatchError extends Error {}
 
 /**
+ * @since 8.4
+ */
+class RequestParseBodyException extends Exception {}
+
+/**
  * An Error Exception.
  * @link https://php.net/manual/en/class.errorexception.php
  */
@@ -606,8 +611,8 @@ class ErrorException extends Exception
         #[LanguageLevelTypeAware(['8.0' => 'string'], default: '')] $message = "",
         #[LanguageLevelTypeAware(['8.0' => 'int'], default: '')] $code = 0,
         #[LanguageLevelTypeAware(['8.0' => 'int'], default: '')] $severity = 1,
-        #[LanguageLevelTypeAware(['8.0' => 'string|null'], default: '')] $filename = __FILE__,
-        #[LanguageLevelTypeAware(['8.0' => 'int|null'], default: '')] $line = __LINE__,
+        #[LanguageLevelTypeAware(['8.0' => 'string|null'], default: '')] $filename = null,
+        #[LanguageLevelTypeAware(['8.0' => 'int|null'], default: '')] $line = null,
         #[LanguageLevelTypeAware(['8.0' => 'Throwable|null'], default: 'Throwable')] $previous = null
     ) {}
 
@@ -650,11 +655,12 @@ final class Closure
      * Duplicates the closure with a new bound object and class scope
      * @link https://secure.php.net/manual/en/closure.bindto.php
      * @param object|null $newThis The object to which the given anonymous function should be bound, or NULL for the closure to be unbound.
-     * @param mixed $newScope The class scope to which associate the closure is to be associated, or 'static' to keep the current one.
+     * @param object|class-string|null $newScope The class scope to which associate the closure is to be associated, or 'static' to keep the current one.
      * If an object is given, the type of the object will be used instead.
      * This determines the visibility of protected and private methods of the bound object.
-     * @return Closure|false Returns the newly created Closure object or FALSE on failure
+     * @return Closure|null Returns the newly created Closure object or null on failure
      */
+    #[Pure]
     public function bindTo(?object $newThis, object|string|null $newScope = 'static'): ?Closure {}
 
     /**
@@ -663,11 +669,12 @@ final class Closure
      * @link https://secure.php.net/manual/en/closure.bind.php
      * @param Closure $closure The anonymous functions to bind.
      * @param object|null $newThis The object to which the given anonymous function should be bound, or NULL for the closure to be unbound.
-     * @param mixed $newScope The class scope to which associate the closure is to be associated, or 'static' to keep the current one.
+     * @param object|class-string|null $newScope The class scope to which associate the closure is to be associated, or 'static' to keep the current one.
      * If an object is given, the type of the object will be used instead.
      * This determines the visibility of protected and private methods of the bound object.
-     * @return Closure|false Returns the newly created Closure object or FALSE on failure
+     * @return Closure|null Returns the newly created Closure object or null on failure
      */
+    #[Pure]
     public static function bind(Closure $closure, ?object $newThis, object|string|null $newScope = 'static'): ?Closure {}
 
     /**
@@ -711,6 +718,7 @@ interface Countable
  * Weak references allow the programmer to retain a reference to an
  * object which does not prevent the object from being destroyed.
  * They are useful for implementing cache like structures.
+ * @template T of object
  * @link https://www.php.net/manual/en/class.weakreference.php
  * @since 7.4
  */
@@ -726,18 +734,22 @@ final class WeakReference
     /**
      * Create a new weak reference.
      * @link https://www.php.net/manual/en/weakreference.create.php
-     * @return WeakReference the freshly instantiated object.
+     * @template TIn of object
+     * @param TIn $object Any object.
+     * @return WeakReference<TIn> The freshly instantiated object.
      * @since 7.4
      */
+    #[Pure]
     public static function create(object $object): WeakReference {}
 
     /**
      * Gets a weakly referenced object. If the object has already been
      * destroyed, NULL is returned.
      * @link https://www.php.net/manual/en/weakreference.get.php
-     * @return object|null
+     * @return T|null
      * @since 7.4
      */
+    #[Pure]
     public function get(): ?object {}
 }
 
@@ -762,6 +774,7 @@ final class WeakMap implements ArrayAccess, Countable, IteratorAggregate
      * @param TKey $object Any object
      * @return bool
      */
+    #[Pure]
     public function offsetExists($object): bool {}
 
     /**
@@ -770,6 +783,7 @@ final class WeakMap implements ArrayAccess, Countable, IteratorAggregate
      * @param TKey $object Any object
      * @return TValue Value associated with the key object
      */
+    #[Pure]
     public function offsetGet($object): mixed {}
 
     /**
@@ -792,8 +806,9 @@ final class WeakMap implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Returns an iterator in the "[object => mixed]" format.
      *
-     * @return Traversable<TKey, TValue>
+     * @return Iterator<TKey, TValue>
      */
+    #[Pure]
     public function getIterator(): Iterator {}
 
     /**
@@ -801,6 +816,7 @@ final class WeakMap implements ArrayAccess, Countable, IteratorAggregate
      *
      * @return int<0,max>
      */
+    #[Pure]
     public function count(): int {}
 }
 
@@ -917,15 +933,25 @@ interface BackedEnum extends UnitEnum
     public readonly int|string $value;
 
     /**
+     * Translates a string or int into the corresponding <code>Enum</code>
+     * case, if any. If there is no matching case defined, it will throw a
+     * <code>ValueError</code>.
      * @param int|string $value
+     * @throws ValueError
+     * @throws TypeError
      * @return static
+     * @link https://www.php.net/manual/en/backedenum.from.php
      */
     #[Pure]
     public static function from(int|string $value): static;
 
     /**
+     * Translates a string or int into the corresponding <code>Enum</code>
+     * case, if any. If there is no matching case defined, it will return null.
      * @param int|string $value
-     * @return static|null
+     * @return static|null A case instance of this enumeration, or null if not
+     * found.
+     * @link https://www.php.net/manual/en/backedenum.tryfrom.php
      */
     #[Pure]
     public static function tryFrom(int|string $value): ?static;
@@ -1054,7 +1080,7 @@ final class Fiber
     public function getReturn(): mixed {}
 
     /**
-     * @return self|null Returns the currently executing fiber instance or NULL if in {main}.
+     * @return Fiber|null Returns the currently executing fiber instance or NULL if in {main}.
      */
     public static function getCurrent(): ?Fiber {}
 
@@ -1088,4 +1114,57 @@ final class FiberError extends Error
 final class ReturnTypeWillChange
 {
     public function __construct() {}
+}
+
+/**
+ * @since 8.2
+ */
+#[Attribute(Attribute::TARGET_CLASS)]
+final class AllowDynamicProperties
+{
+    public function __construct() {}
+}
+
+/**
+ * @since 8.2
+ */
+#[Attribute(Attribute::TARGET_PARAMETER)]
+final class SensitiveParameter
+{
+    public function __construct() {}
+}
+
+/**
+ * @since 8.2
+ */
+final class SensitiveParameterValue
+{
+    private readonly mixed $value;
+
+    public function __construct(mixed $value) {}
+
+    public function getValue(): mixed {}
+
+    public function __debugInfo(): array {}
+}
+
+/**
+ * @since 8.3
+ */
+#[Attribute(Attribute::TARGET_METHOD)]
+final class Override
+{
+    public function __construct() {}
+}
+
+/**
+ * @since 8.4
+ */
+#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_FUNCTION|Attribute::TARGET_CLASS_CONSTANT)]
+final class Deprecated
+{
+    public readonly ?string $message;
+    public readonly ?string $since;
+
+    public function __construct(?string $message = null, ?string $since = null) {}
 }

@@ -1,6 +1,7 @@
 <?php
 
 // Start of sockets v.
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Internal\PhpStormStubsElementAvailable;
 
 /**
@@ -56,6 +57,19 @@ function socket_addrinfo_bind(AddressInfo $address): Socket|false {}
  * @return array containing the fields in the addrinfo structure.
  * @since 7.2
  */
+#[ArrayShape([
+    'ai_flags' => 'int',
+    'ai_family' => 'int',
+    'ai_socktype' => 'int',
+    'ai_protocol' => 'int',
+    'ai_canonname' => 'string',
+    'ai_addr' => [
+        'sin_port' => 'int',
+        'sin_addr' => 'string',
+        'sin6_port' => 'int',
+        'sin6_addr' => 'string',
+    ]
+])]
 function socket_addrinfo_explain(AddressInfo $address): array {}
 
 /**
@@ -1386,6 +1400,11 @@ function socket_wsaprotocol_info_import($info_id) {}
  */
 function socket_wsaprotocol_info_release($info_id) {}
 
+/**
+ * @since 8.3
+ */
+function socket_atmark(Socket $socket): bool {}
+
 define('AF_UNIX', 1);
 define('AF_INET', 2);
 
@@ -1448,7 +1467,12 @@ define('SO_RCVTIMEO', 20);
 define('SO_TYPE', 3);
 define('SO_ERROR', 4);
 define('SO_BINDTODEVICE', 25);
+define('SO_ATTACH_REUSEPORT_CBPF', 51);
+define('SO_DETACH_FILTER', 27);
+define('SO_DETACH_BPF', 27);
+
 define('SOL_SOCKET', 1);
+define('SOL_UDPLITE', 136);
 define('SOMAXCONN', 128);
 /**
  * @since 8.1
@@ -1546,6 +1570,14 @@ define('IPV6_MULTICAST_HOPS', 18);
  */
 define('IPV6_MULTICAST_LOOP', 19);
 define('IPV6_V6ONLY', 26);
+define('IP_BIND_ADDRESS_NO_PORT', 24);
+define('IP_MTU_DISCOVER', 10);
+define('IP_PMTUDISC_DO', 2);
+define('IP_PMTUDISC_DONT', 0);
+define('IP_PMTUDISC_WANT', 1);
+define('IP_PMTUDISC_PROBE', 3);
+define('IP_PMTUDISC_INTERFACE', 4);
+define('IP_PMTUDISC_OMIT', 5);
 
 /**
  * Operation not permitted.
@@ -2181,6 +2213,183 @@ define('AI_ALL', 16);
  * @since 8.1
  */
 define('TCP_DEFER_ACCEPT', 9);
+
+/**
+ * @since 8.2
+ */
+define('SO_INCOMING_CPU', 49);
+
+/**
+ * @since 8.2
+ */
+define('SO_MEMINFO', 55);
+
+/**
+ * @since 8.2
+ */
+define('SO_BPF_EXTENSIONS', 48);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_OFF', -4096);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_PROTOCOL', 0);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_PKTTYPE', 4);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_IFINDEX', 8);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_NLATTR', 12);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_NLATTR_NEST', 16);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_MARK', 20);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_QUEUE', 24);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_HATYPE', 28);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_RXHASH', 32);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_CPU', 36);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_ALU_XOR_X', 40);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_VLAN_TAG', 44);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_VLAN_TAG_PRESENT', 48);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_PAY_OFFSET', 52);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_RANDOM', 56);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_VLAN_TPID', 60);
+
+/**
+ * @since 8.2
+ */
+define('SKF_AD_MAX', 64);
+
+/**
+ * @since 8.2
+ */
+define('TCP_CONGESTION', 13);
+
+/**
+ * @since 8.2
+ */
+define('TCP_NOTSENT_LOWAT', 25);
+
+/**
+ * @since 8.2
+ */
+define('TCP_KEEPIDLE', 4);
+
+/**
+ * @since 8.2
+ */
+define('TCP_KEEPINTVL', 5);
+
+/**
+ * @since 8.2
+ */
+define('TCP_KEEPCNT', 6);
+
+/**
+ * @since 8.3
+ */
+define('TCP_QUICKACK', 12);
+
+/**
+ * @since 8.3
+ */
+define('TCP_REPAIR', 19);
+
+/**
+ * Socket_set_option for the socket_send* functions.
+ * It avoids copy b/w userland and kernel for both TCP and UDP protocols.
+ * @since 8.2
+ */
+define('SO_ZEROCOPY', 60);
+
+/**
+ * Socket_set_option for the socket_send* functions.
+ * It avoids copy b/w userland and kernel for both TCP and UDP protocols.
+ * @since 8.2
+ */
+define('MSG_ZEROCOPY', 67108864);
+/**
+ * @since 8.4
+ */
+define('SOCK_DCCP', 6);
+/**
+ * @since 8.4
+ */
+define('TCP_SYNCNT', 7);
+
+/**
+ * @since 8.4
+ */
+define('SOCK_CLOEXEC', 524288);
+
+/**
+ * @since 8.4
+ */
+define('SOCK_NONBLOCK', 2048);
+
+/**
+ * @since 8.4
+ */
+define('SO_BINDTOIFINDEX', 62);
 /**
  * @since 8.0
  */

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace StubTests\Model;
 
@@ -9,6 +8,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use ReflectionMethod;
 use RuntimeException;
 use stdClass;
+use StubTests\Parsers\ParserUtils;
 use function strlen;
 
 class PHPMethod extends PHPFunction
@@ -31,7 +31,7 @@ class PHPMethod extends PHPFunction
     /**
      * @var string
      */
-    public $parentName;
+    public $parentId;
 
     /**
      * @var bool
@@ -44,10 +44,22 @@ class PHPMethod extends PHPFunction
      */
     public function readObjectFromReflection($reflectionObject)
     {
-        parent::readObjectFromReflection($reflectionObject);
+        $this->id = $reflectionObject->getName();
+        $this->name = $reflectionObject->getName();
+        $this->parentId = "\\{$reflectionObject->class}";
+        $this->isDeprecated = $reflectionObject->isDeprecated();
+        $this->namespace = $reflectionObject->getNamespaceName();
+        foreach ($reflectionObject->getParameters() as $parameter) {
+            $this->parameters[] = (new PHPParameter())->readObjectFromReflection($parameter);
+        }
+        if (method_exists($reflectionObject, 'getReturnType')) {
+            $returnTypes = self::getReflectionTypeAsArray($reflectionObject->getReturnType());
+        }
+        if (!empty($returnTypes)) {
+            array_push($this->returnTypesFromSignature, ...$returnTypes);
+        }
         $this->isStatic = $reflectionObject->isStatic();
         $this->isFinal = $reflectionObject->isFinal();
-        $this->parentName = $reflectionObject->class;
         if ($reflectionObject->isProtected()) {
             $access = 'protected';
         } elseif ($reflectionObject->isPrivate()) {
@@ -77,7 +89,7 @@ class PHPMethod extends PHPFunction
      */
     public function readObjectFromStubNode($node)
     {
-        $this->parentName = self::getFQN($node->getAttribute('parent'));
+        $this->parentId = self::getFQN($node->getAttribute('parent'));
         $this->name = $node->name->name;
         $typesFromAttribute = self::findTypesFromAttribute($node->attrGroups);
         $this->isReturnTypeTentative = self::hasTentativeTypeAttribute($node->attrGroups);
@@ -85,6 +97,7 @@ class PHPMethod extends PHPFunction
         $this->returnTypesFromAttribute = $typesFromAttribute;
         array_push($this->returnTypesFromSignature, ...self::convertParsedTypeToArray($node->getReturnType()));
         $this->collectTags($node);
+        $this->checkIfReturnTypeIsTentative($node);
         $this->checkDeprecationTag($node);
         $this->checkReturnTag();
 
@@ -94,7 +107,7 @@ class PHPMethod extends PHPFunction
         $index = 0;
         foreach ($node->getParams() as $parameter) {
             $parsedParameter = (new PHPParameter())->readObjectFromStubNode($parameter);
-            if (self::entitySuitsCurrentPhpVersion($parsedParameter)) {
+            if (ParserUtils::entitySuitsCurrentPhpVersion($parsedParameter)) {
                 $parsedParameter->indexInSignature = $index;
                 $addedParameters = array_filter($this->parameters, function (PHPParameter $addedParameter) use ($parsedParameter) {
                     return $addedParameter->name === $parsedParameter->name;
@@ -119,6 +132,7 @@ class PHPMethod extends PHPFunction
             $relatedParamTag = array_pop($relatedParamTags);
             if ($relatedParamTag !== null) {
                 $parameter->isOptional = $parameter->isOptional || str_contains((string)$relatedParamTag->getDescription(), '[optional]');
+                $parameter->markedOptionalInPhpDoc = str_contains((string)$relatedParamTag->getDescription(), '[optional]');
             }
         }
 
@@ -131,6 +145,7 @@ class PHPMethod extends PHPFunction
         } else {
             $this->access = 'public';
         }
+        $this->stubObjectHash = spl_object_hash($this);
         return $this;
     }
 

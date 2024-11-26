@@ -27,7 +27,17 @@ abstract class ReflectionFunctionAbstract implements Reflector
      * @link https://php.net/manual/en/reflectionfunctionabstract.clone.php
      * @return void
      */
+    #[PhpStormStubsElementAvailable(from: "5.4", to: "8.0")]
     final private function __clone(): void {}
+
+    /**
+     * Clones function
+     *
+     * @link https://php.net/manual/en/reflectionfunctionabstract.clone.php
+     * @return void
+     */
+    #[PhpStormStubsElementAvailable(from: "8.1")]
+    private function __clone(): void {}
 
     /**
      * Checks if function in namespace
@@ -121,6 +131,15 @@ abstract class ReflectionFunctionAbstract implements Reflector
     #[Pure]
     #[TentativeType]
     public function getClosureScopeClass(): ?ReflectionClass {}
+
+    /**
+     * @return ReflectionClass|null Returns the class on success or {@see null}
+     * on failure.
+     * @since 8.0
+     */
+    #[Pure]
+    #[TentativeType]
+    public function getClosureCalledClass(): ?ReflectionClass {}
 
     /**
      * Gets doc comment
@@ -325,4 +344,6 @@ abstract class ReflectionFunctionAbstract implements Reflector
     #[Pure]
     #[TentativeType]
     public function isStatic(): bool {}
+
+    public function __toString() {}
 }

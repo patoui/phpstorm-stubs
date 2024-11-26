@@ -37,7 +37,6 @@ use JetBrains\PhpStorm\Pure;
  * Loads a PHP extension at runtime
  * @link https://php.net/manual/en/function.dl.php
  */
-#[Deprecated(since: '5.3')]
 function dl(string $extension_filename): bool {}
 
 /**
@@ -78,8 +77,10 @@ function is_iterable(mixed $value): bool {}
  * An ISO-8859-1 string.
  * </p>
  * @return string the UTF-8 translation of <i>data</i>.
+ * @deprecated 8.2 Consider to use {@link mb_convert_encoding}, {@link UConverter::transcode()} or {@link iconv()}
  */
 #[Pure]
+#[Deprecated(replacement: "mb_convert_encoding(%parameter0%, 'UTF-8', 'ISO-8859-1')", since: "8.2")]
 function utf8_encode(string $string): string {}
 
 /**
@@ -90,8 +91,10 @@ function utf8_encode(string $string): string {}
  * An UTF-8 encoded string.
  * </p>
  * @return string the ISO-8859-1 translation of <i>data</i>.
+ * @deprecated 8.2 Consider to use {@link mb_convert_encoding}, {@link UConverter::transcode()} or {@link iconv()}
  */
 #[Pure]
+#[Deprecated(replacement: "mb_convert_encoding(%parameter0%, 'ISO-8859-1', 'UTF-8')", since: "8.2")]
 function utf8_decode(string $string): string {}
 
 /**
@@ -278,3 +281,10 @@ define('__DIR__', '', true);
  * @link https://php.net/manual/en/language.constants.predefined.php
  */
 define('__NAMESPACE__', '', true);
+
+/**
+ * The name of the current property (case-sensitive). This constant
+ * is defined in compile-time (Added in PHP 8.4.0).
+ * @link https://php.net/manual/en/language.constants.predefined.php
+ */
+define('__PROPERTY__', '', true);

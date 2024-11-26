@@ -176,7 +176,7 @@ function serialize(mixed $value): string {}
  * In case the passed string is not unserializeable, false is returned and
  * E_NOTICE is issued.</p>
  */
-function unserialize(string $data, array $options = []): mixed {}
+function unserialize(string $data, #[PhpStormStubsElementAvailable(from: '7.0')] array $options = []): mixed {}
 
 /**
  * Dumps information about a variable
@@ -187,12 +187,19 @@ function unserialize(string $data, array $options = []): mixed {}
  * @param mixed ...$values [optional]
  * @return void
  */
-function var_dump(
-    #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] $vars,
-    #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] ...$vars,
-    #[PhpStormStubsElementAvailable(from: '8.0')] mixed $value,
-    #[PhpStormStubsElementAvailable(from: '8.0')] mixed ...$values
-): void {}
+#[PhpStormStubsElementAvailable(from: '8.0')]
+function var_dump(mixed $value, mixed ...$values): void {}
+
+/**
+ * Dumps information about a variable
+ * @link https://php.net/manual/en/function.var-dump.php
+ * @param mixed ...$vars <p>
+ * The variable you want to export.
+ * </p>
+ * @return void
+ */
+#[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')]
+function var_dump(...$vars): void {}
 
 /**
  * Outputs or returns a parsable string representation of a variable
@@ -202,7 +209,7 @@ function var_dump(
  * </p>
  * @param bool $return [optional] <p>
  * If used and set to true, var_export will return
- * the variable representation instead of outputing it.
+ * the variable representation instead of outputting it.
  * </p>
  * @return string|null the variable representation when the return
  * parameter is used and evaluates to true. Otherwise, this function will
@@ -242,7 +249,8 @@ function debug_zval_dump(
  * will be presented in a format that shows keys and elements. Similar
  * notation is used for objects.
  */
-function print_r(mixed $value, bool $return = false): string|bool {}
+#[LanguageLevelTypeAware(['8.4' => 'string|true'], default: 'string|bool')]
+function print_r(mixed $value, bool $return = false) {}
 
 /**
  * Returns the amount of memory allocated to PHP
@@ -271,6 +279,11 @@ function memory_get_usage(bool $real_usage = false): int {}
 function memory_get_peak_usage(bool $real_usage = false): int {}
 
 /**
+ * @since 8.2
+ */
+function memory_reset_peak_usage(): void {}
+
+/**
  * Register a function for execution on shutdown
  * @link https://php.net/manual/en/function.register-shutdown-function.php
  * @param callable $callback <p>
@@ -293,6 +306,7 @@ function memory_get_peak_usage(bool $real_usage = false): int {}
  * </p>
  * @return bool|null
  */
+#[LanguageLevelTypeAware(['8.2' => 'void'], default: 'null|bool')]
 function register_shutdown_function(callable $callback, mixed ...$args): ?bool {}
 
 /**
@@ -359,7 +373,8 @@ function show_source(string $filename, bool $return = false): string|bool {}
  * code as a string instead of printing it out. Otherwise, it will return
  * true on success, false on failure.
  */
-function highlight_string(string $string, bool $return = false): string|bool {}
+#[LanguageLevelTypeAware(['8.4' => 'string|true'], default: 'string|bool')]
+function highlight_string(string $string, bool $return = false) {}
 
 /**
  * Get the system's high resolution time
@@ -370,10 +385,7 @@ function highlight_string(string $string, bool $return = false): string|bool {}
  * Otherwise the nanoseconds are returned as integer (64bit platforms) or float (32bit platforms).
  */
 #[Pure(true)]
-function hrtime(
-    #[PhpStormStubsElementAvailable(from: '7.3', to: '7.4')] bool $as_number,
-    #[PhpStormStubsElementAvailable(from: '8.0')] bool $as_number = false
-): array|int|float|false {}
+function hrtime(bool $as_number = false): array|int|float|false {}
 
 /**
  * Return source with stripped comments and whitespace
@@ -440,7 +452,8 @@ function ini_get(string $option): string|false {}
  * </p>
  */
 #[Pure(true)]
-function ini_get_all(?string $extension, bool $details = true): array|false {}
+#[ArrayShape(["global_value" => "string", "local_value" => "string", "access" => "int"])]
+function ini_get_all(?string $extension, #[PhpStormStubsElementAvailable(from: '7.0')] bool $details = true): array|false {}
 
 /**
  * Sets the value of a configuration option
@@ -481,6 +494,13 @@ function ini_alter(string $option, #[LanguageLevelTypeAware(['8.1' => 'string|in
  * @return void
  */
 function ini_restore(string $option): void {}
+
+/**
+ * @param string $shorthand
+ * @return int
+ * @since 8.2
+ */
+function ini_parse_quantity(string $shorthand): int {}
 
 /**
  * Gets the current include_path configuration option
@@ -585,7 +605,7 @@ function restore_include_path() {}
  * setcookie successfully runs, it will return true.
  * This does not indicate whether the user accepted the cookie.
  */
-function setcookie(string $name, $value = "", $expires_or_options = 0, $path = "", $domain = "", $secure = false, $httponly = false): bool {}
+function setcookie(string $name, string $value = "", int $expires_or_options = 0, string $path = "", string $domain = "", bool $secure = false, bool $httponly = false): bool {}
 
 /**
  * Send a cookie
@@ -608,7 +628,7 @@ function setcookie(string $name, $value = "", $expires_or_options = 0, $path = "
  *                        This does not indicate whether the user accepted the cookie.
  * @since 7.3
  */
-function setcookie(string $name, $value = '', array $options = []): bool {}
+function setcookie(string $name, string $value = '', array $options = []): bool {}
 
 /**
  * Send a cookie without urlencoding the cookie value
@@ -692,7 +712,7 @@ function header(string $header, bool $replace = true, int $response_code = 0): v
  * This parameter is case-insensitive.
  * @return void
  */
-function header_remove(?string $name): void {}
+function header_remove(?string $name = null): void {}
 
 /**
  * Checks if or where headers have been sent
@@ -710,7 +730,7 @@ function header_remove(?string $name): void {}
  * @return bool headers_sent will return false if no HTTP headers
  * have already been sent or true otherwise.
  */
-function headers_sent(&$filename, &$line): bool {}
+function headers_sent(&$filename = null, &$line = null): bool {}
 
 /**
  * Returns a list of response headers sent (or ready to send)
@@ -859,6 +879,7 @@ function move_uploaded_file(string $from, string $to): bool {}
  * @since 7.3
  */
 #[Pure]
+#[ArrayShape(["description" => "string", "mac" => "string", "mtu" => "int", "unicast" => "array", "up" => "bool"])]
 function net_get_interfaces(): array|false {}
 
 /**

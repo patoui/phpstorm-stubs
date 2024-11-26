@@ -1,6 +1,7 @@
 <?php
 
 // Start of ldap v.
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware as PhpVersionAware;
 use JetBrains\PhpStorm\Internal\PhpStormStubsElementAvailable as Available;
@@ -624,6 +625,7 @@ function ldap_get_dn(
  * represents the number of returned values, next elements are numerically
  * indexed DN components.
  */
+#[ArrayShape(["count" => "int"])]
 function ldap_explode_dn(string $dn, int $with_attrib): array|false {}
 
 /**
@@ -741,7 +743,7 @@ function ldap_delete_ext(
 /**
  * This function is an alias of: ldap_mod_replace().
  * Replace attribute values with new ones
- * @link https://php.net/manual/en/function.ldap-mod-replace.php
+ * @link https://www.php.net/manual/en/function.ldap-modify.php
  * @param resource $ldap <p>
  * An LDAP link identifier, returned by <b>ldap_connect</b>.
  * </p>
@@ -751,7 +753,6 @@ function ldap_delete_ext(
  * @param array $entry
  * @param array|null $controls Array of LDAP Controls to send with the request.
  * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
- * @since 7.0
  */
 function ldap_modify(
     #[PhpVersionAware(['8.1' => 'LDAP\Connection'], default: 'resource')] $ldap,
@@ -1421,6 +1422,11 @@ function ldap_count_references(
     #[PhpVersionAware(['8.1' => 'LDAP\Result'], default: 'resource')] $result
 ): int {}
 
+/**
+ * @since 8.3
+ */
+function ldap_exop_sync(LDAP\Connection $ldap, string $request_oid, ?string $request_data = null, ?array $controls = null, &$response_data = null, &$response_oid = null): Result|bool {}
+
 define('LDAP_ESCAPE_FILTER', 1);
 define('LDAP_ESCAPE_DN', 2);
 define('LDAP_DEREF_NEVER', 0);
@@ -1758,4 +1764,13 @@ define('LDAP_CONTROL_AUTHZID_REQUEST', '2.16.840.1.113730.3.4.16');
  */
 define('LDAP_CONTROL_AUTHZID_RESPONSE', '2.16.840.1.113730.3.4.15');
 
+/**
+ * @since 8.4
+ */
+define('LDAP_OPT_X_TLS_PROTOCOL_TLS1_3', 772);
+
+/**
+ * @since 8.4
+ */
+define('LDAP_OPT_X_TLS_PROTOCOL_MAX', 24603);
 // End of ldap v.

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace StubTests\Model;
 
@@ -20,15 +19,15 @@ class PHPProperty extends BasePHPElement
     public $typesFromPhpDoc = [];
     public $access = '';
     public $is_static = false;
-    public $parentName;
+    public $parentId;
     public $isReadonly = false;
 
     /**
-     * @param string|null $parentName
+     * @param string|null $parentId
      */
-    public function __construct($parentName = null)
+    public function __construct($parentId = null)
     {
-        $this->parentName = $parentName;
+        $this->parentId = $parentId;
     }
 
     /**
@@ -38,6 +37,7 @@ class PHPProperty extends BasePHPElement
     public function readObjectFromReflection($reflectionObject)
     {
         $this->name = $reflectionObject->getName();
+        $this->parentId = "\\{$reflectionObject->class}";
         if ($reflectionObject->isProtected()) {
             $access = 'protected';
         } elseif ($reflectionObject->isPrivate()) {
@@ -50,8 +50,8 @@ class PHPProperty extends BasePHPElement
         if (method_exists($reflectionObject, 'getType')) {
             $this->typesFromSignature = self::getReflectionTypeAsArray($reflectionObject->getType());
         }
-        if (property_exists($reflectionObject, 'isReadonly')) {
-            $this->isReadonly = $reflectionObject->isReadonly;
+        if (method_exists($reflectionObject, 'isReadonly')) {
+            $this->isReadonly = $reflectionObject->isReadOnly();
         }
         return $this;
     }
@@ -82,8 +82,10 @@ class PHPProperty extends BasePHPElement
 
         $parentNode = $node->getAttribute('parent');
         if ($parentNode !== null) {
-            $this->parentName = self::getFQN($parentNode);
+            $this->parentId = self::getFQN($parentNode);
         }
+        $this->checkDeprecationTag($node);
+        $this->stubObjectHash = spl_object_hash($this);
         return $this;
     }
 
@@ -101,7 +103,7 @@ class PHPProperty extends BasePHPElement
                             $this->mutedProblems[StubProblemType::STUB_IS_MISSED] = $problem->versions;
                             break;
                         case 'wrong readonly':
-                            $this->mutedProblems[StubProblemType::PROPERTY_READONLY] = $problem->versions;
+                            $this->mutedProblems[StubProblemType::WRONG_READONLY] = $problem->versions;
                             break;
                         default:
                             throw new Exception("Unexpected value $problem->description");

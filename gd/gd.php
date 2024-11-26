@@ -1,5 +1,6 @@
 <?php
 
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use JetBrains\PhpStorm\Internal\PhpStormStubsElementAvailable;
@@ -84,6 +85,22 @@ use JetBrains\PhpStorm\Pure;
  * </p>
  */
 #[Pure]
+#[ArrayShape([
+    "GD Version" => "string",
+    "FreeType Support" => "bool",
+    "GIF Read Support" => "bool",
+    "GIF Create Support" => "bool",
+    "JPEG Support" => "bool",
+    "PNG Support" => "bool",
+    "WBMP Support" => "bool",
+    "XPM Support" => "bool",
+    "XBM Support" => "bool",
+    "WebP Support" => "bool",
+    "BMP Support" => "bool",
+    "TGA Read Support" => "bool",
+    "AVIF Support" => "bool",
+    "JIS-mapped Japanese Font Support" => "bool"
+])]
 function gd_info(): array {}
 
 /**
@@ -329,6 +346,7 @@ function imagecolorexact(GdImage $image, int $red, int $green, int $blue): int {
  * </p>
  * @return bool|null
  */
+#[LanguageLevelTypeAware(['8.2' => 'null|false'], default: 'null|bool')]
 function imagecolorset(GdImage $image, int $color, int $red, int $green, int $blue, int $alpha = 0): ?bool {}
 
 /**
@@ -371,6 +389,7 @@ function imagecolorstotal(GdImage $image): int {}
  */
 #[Pure]
 #[LanguageLevelTypeAware(['8.0' => 'array'], default: 'array|false')]
+#[ArrayShape(["red" => "int", "green" => "int", "blue" => "int", "alpha" => "int"])]
 function imagecolorsforindex(GdImage $image, int $color) {}
 
 /**
@@ -799,11 +818,16 @@ function imagecopyresampled(GdImage $dst_image, GdImage $src_image, int $dst_x, 
  * Specifies the color of the uncovered zone after the rotation
  * </p>
  * @param bool $ignore_transparent [optional] <p>
- * If set and non-zero, transparent colors are ignored (otherwise kept).
+ * Prior to PHP 8.3 if set and non-zero, transparent colors are ignored (otherwise kept).
  * </p>
  * @return resource|GdImage|false the rotated image or <b>FALSE</b> on failure
  */
-function imagerotate(GdImage $image, float $angle, int $background_color, bool $ignore_transparent = false): GdImage|false {}
+function imagerotate(
+    GdImage $image,
+    float $angle,
+    int $background_color,
+    #[PhpStormStubsElementAvailable(to: '8.2')] bool $ignore_transparent = false
+): GdImage|false {}
 
 /**
  * Should antialias functions be used or not. <br/>
@@ -1004,9 +1028,9 @@ function imagepng(GdImage $image, $file = null, int $quality = -1, int $filters 
  * Output a WebP image to browser or file
  * @link https://php.net/manual/en/function.imagewebp.php
  * @param resource|GdImage $image
- * @param string $to [optional] <p>
- * The path to save the file to. If not set or null, the raw image stream
- * will be outputted directly.
+ * @param resource|string|null $file [optional] <p>
+ * The path or an open stream resource (which is automatically closed after this function returns)
+ * to save the file to. If not set or null, the raw image stream will be output directly.
  * </p>
  * @param int $quality [optional] <p>
  * quality ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file).
@@ -1014,7 +1038,7 @@ function imagepng(GdImage $image, $file = null, int $quality = -1, int $filters 
  * @return bool true on success or false on failure.
  * @since 5.4
  */
-function imagewebp($image, $to = null, $quality = 80): bool {}
+function imagewebp(GdImage $image, $file = null, int $quality = -1): bool {}
 
 /**
  * Output image to browser or file
@@ -1032,7 +1056,7 @@ function imagegif(GdImage $image, $file = null): bool {}
  * Output image to browser or file
  * @link https://php.net/manual/en/function.imagejpeg.php
  * @param resource|GdImage $image
- * @param string $filename [optional] <p>
+ * @param string $file [optional] <p>
  * The path to save the file to. If not set or null, the raw image stream
  * will be outputted directly.
  * </p>
@@ -1047,7 +1071,7 @@ function imagegif(GdImage $image, $file = null): bool {}
  * </p>
  * @return bool true on success or false on failure.
  */
-function imagejpeg($image, $filename = null, $quality = null): bool {}
+function imagejpeg(GdImage $image, $file = null, int $quality = -1): bool {}
 
 /**
  * Output image to browser or file
@@ -1097,7 +1121,7 @@ function imagegd(GdImage $image, ?string $file = null): bool {}
  * </p>
  * @return bool true on success or false on failure.
  */
-function imagegd2(GdImage $image, ?string $file = null, int $chunk_size = null, int $mode = null): bool {}
+function imagegd2(GdImage $image, ?string $file = null, int $chunk_size = 128, int $mode = IMG_GD2_RAW): bool {}
 
 /**
  * Destroy an image
@@ -1160,8 +1184,28 @@ function imagefilledpolygon(
     GdImage $image,
     array $points,
     #[Deprecated(since: "8.1")] int $num_points_or_color,
-    #[PhpStormStubsElementAvailable(from: '5.3', to: '7.4')] ?int $color,
-    #[PhpStormStubsElementAvailable(from: '8.0')] ?int $color = null
+    ?int $color
+): bool {}
+
+/**
+ * Draw a filled polygon
+ * @link https://php.net/manual/en/function.imagefilledpolygon.php
+ * @param GdImage $image
+ * @param int[] $points <p>
+ * An array containing the x and y
+ * coordinates of the polygons vertices consecutively.
+ * </p>
+ * @param int|null $color <p>
+ * A color identifier created with
+ * imagecolorallocate.
+ * </p>
+ * @return bool true on success or false on failure.
+ */
+#[PhpStormStubsElementAvailable(from: '8.0')]
+function imagefilledpolygon(
+    GdImage $image,
+    array $points,
+    ?int $color
 ): bool {}
 
 /**
@@ -1406,7 +1450,9 @@ function imagesetpixel(GdImage $image, int $x, int $y, int $color): bool {}
  * Draw a string horizontally
  * @link https://php.net/manual/en/function.imagestring.php
  * @param resource|GdImage $image
- * @param int $font
+ * @param int $font <p>
+ * Can be 1, 2, 3, 4, 5 for built-in fonts in latin2 encoding (where higher numbers corresponding to larger fonts) or (since 8.1) GdFont instance
+ * </p>
  * @param int $x <p>
  * x-coordinate of the upper left corner.
  * </p>
@@ -1501,10 +1547,7 @@ function imagesy(GdImage $image): int {}
  * imagecolorallocate.
  * </p>
  * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
- * @see imagesetstyle()
- * @see imageline()
  */
-#[Deprecated("Use combination of imagesetstyle() and imageline() instead")]
 function imagedashedline(GdImage $image, int $x1, int $y1, int $x2, int $y2, int $color): bool {}
 
 /**
@@ -1523,9 +1566,10 @@ function imagedashedline(GdImage $image, int $x1, int $y1, int $x2, int $y2, int
  * search for files that do not begin with a leading '/' by appending
  * '.ttf' to the filename and searching along a library-defined font path.
  * </p>
- * @param string $text <p>
+ * @param string $string <p>
  * The string to be measured.
  * </p>
+ * @param array $options [optional]
  * @return array|false imagettfbbox returns an array with 8
  * elements representing four points making the bounding box of the
  * text on success and false on error.
@@ -1572,7 +1616,7 @@ function imagedashedline(GdImage $image, int $x1, int $y1, int $x2, int $y2, int
  * corner seeing the text horizontally.
  */
 #[Pure]
-function imagettfbbox($size, $angle, $font_filename, $text) {}
+function imagettfbbox(float $size, float $angle, string $font_filename, string $string, #[PhpStormStubsElementAvailable(from: '8.0')] array $options = []): array|false {}
 
 /**
  * Write text to the image using TrueType fonts
@@ -1657,6 +1701,7 @@ function imagettfbbox($size, $angle, $font_filename, $text) {}
  * If a character is used in the string which is not supported by the
  * font, a hollow rectangle will replace the character.
  * </p>
+ * @param array $options [optional]
  * @return array|false an array with 8 elements representing four points making the
  * bounding box of the text. The order of the points is lower left, lower
  * right, upper right, upper left. The points are relative to the text
@@ -1664,7 +1709,7 @@ function imagettfbbox($size, $angle, $font_filename, $text) {}
  * corner when you see the text horizontally.
  * Returns false on error.
  */
-function imagettftext($image, $size, $angle, $x, $y, $color, $font_filename, $text) {}
+function imagettftext(GdImage $image, float $size, float $angle, int $x, int $y, int $color, string $font_filename, string $text, #[PhpStormStubsElementAvailable(from: '8.0')] array $options = []): array|false {}
 
 /**
  * Give the bounding box of a text using fonts via freetype2
@@ -1683,10 +1728,10 @@ function imagettftext($image, $size, $angle, $x, $y, $color, $font_filename, $te
  * search for files that do not begin with a leading '/' by appending
  * '.ttf' to the filename and searching along a library-defined font path.
  * </p>
- * @param string $text <p>
+ * @param string $string <p>
  * The string to be measured.
  * </p>
- * @param array $extrainfo [optional] <p>
+ * @param array $options [optional] <p>
  * <table>
  * Possible array indexes for extrainfo
  * <tr valign="top">
@@ -1744,7 +1789,7 @@ function imagettftext($image, $size, $angle, $x, $y, $color, $font_filename, $te
  * Returns false on error.
  */
 #[Pure]
-function imageftbbox($size, $angle, $font_filename, $text, $extrainfo = null) {}
+function imageftbbox(float $size, float $angle, string $font_filename, string $string, array $options = []): array|false {}
 
 /**
  * Write text to the image using fonts using FreeType 2
@@ -1812,7 +1857,7 @@ function imageftbbox($size, $angle, $font_filename, $text, $extrainfo = null) {}
  * @param string $text <p>
  * Text to be inserted into image.
  * </p>
- * @param array $extrainfo [optional] <p>
+ * @param array $options [optional] <p>
  * <table>
  * Possible array indexes for extrainfo
  * <tr valign="top">
@@ -1862,7 +1907,7 @@ function imageftbbox($size, $angle, $font_filename, $text, $extrainfo = null) {}
  * </tr>
  * Returns false on error.
  */
-function imagefttext($image, $size, $angle, $x, $y, $color, $font_filename, $text, $extrainfo = null) {}
+function imagefttext(GdImage $image, float $size, float $angle, int $x, int $y, int $color, string $font_filename, string $text, array $options = []): array|false {}
 
 /**
  * Load a PostScript Type 1 font from file
@@ -2206,6 +2251,7 @@ function imageconvolution(GdImage $image, array $matrix, float $divisor, float $
  * @link https://php.net/manual/en/function.imageresolution.php
  * @since 7.2
  */
+#[LanguageLevelTypeAware(['8.2' => 'array|true'], default: 'array|bool')]
 function imageresolution(GdImage $image, ?int $resolution_x = null, ?int $resolution_y = null): array|bool {}
 
 /**

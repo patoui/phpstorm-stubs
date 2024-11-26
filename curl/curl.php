@@ -27,8 +27,8 @@ class CURLFile
      */
     public function __construct(
         #[LanguageLevelTypeAware(['8.0' => 'string'], default: '')] $filename,
-        #[LanguageLevelTypeAware(['8.0' => 'string|null'], default: '')] $mime_type = '',
-        #[LanguageLevelTypeAware(['8.0' => 'string|null'], default: '')] $posted_filename = ''
+        #[LanguageLevelTypeAware(['8.0' => 'string|null'], default: '')] $mime_type = null,
+        #[LanguageLevelTypeAware(['8.0' => 'string|null'], default: '')] $posted_filename = null
     ) {}
 
     /**
@@ -2594,7 +2594,7 @@ function curl_close(#[LanguageLevelTypeAware(['8.0' => 'CurlHandle'], default: '
 /**
  * Returns a new cURL multi handle
  * @link https://php.net/manual/en/function.curl-multi-init.php
- * @return resource|CurlMultiHandle|false a cURL multi handle resource on success, false on failure.
+ * @return resource|CurlMultiHandle a cURL multi handle resource or object depends on the php version
  */
 #[LanguageLevelTypeAware(['8.0' => 'CurlMultiHandle'], default: 'resource')]
 function curl_multi_init(): CurlMultiHandle {}
@@ -2757,6 +2757,7 @@ function curl_multi_getcontent(#[LanguageLevelTypeAware(['8.0' => 'CurlHandle'],
  * @return array|false On success, returns an associative array for the message, false on failure.
  */
 #[Pure]
+#[ArrayShape(["msg" => "int", "result" => "int", "handle" => "resource"])]
 function curl_multi_info_read(#[LanguageLevelTypeAware(['8.0' => 'CurlMultiHandle'], default: 'resource')] $multi_handle, &$queued_messages): array|false {}
 
 /**
@@ -2794,6 +2795,10 @@ function curl_share_errno(#[LanguageLevelTypeAware(['8.0' => 'CurlShareHandle'],
 #[Pure]
 function curl_share_strerror(int $error_code): ?string {}
 
+/**
+ * @since 8.2
+ */
+function curl_upkeep(CurlHandle $handle): bool {}
 /**
  * @since 8.0
  */

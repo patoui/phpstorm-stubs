@@ -387,7 +387,7 @@ function preg_replace_callback(
 /**
  * Perform a regular expression search and replace using callbacks
  * @link https://php.net/manual/en/function.preg-replace-callback-array.php
- * @param array|callable[] $pattern An associative array mapping patterns (keys) to callbacks (values)
+ * @param callable[] $pattern An associative array mapping patterns (keys) to callbacks (values)
  * @param string|string[] $subject
  * @param int $limit [optional]
  * @param int &$count [optional]
@@ -629,7 +629,7 @@ define('PCRE_VERSION_MAJOR', 10);
 /**
  * @since 7.3
  */
-define('PCRE_VERSION_MINOR', 39);
+define('PCRE_VERSION_MINOR', 42);
 
 /**
  * @since 7.3

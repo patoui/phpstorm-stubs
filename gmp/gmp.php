@@ -1,6 +1,7 @@
 <?php
 
 // Start of gmp v.
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\Pure;
 
@@ -425,6 +426,7 @@ function gmp_gcd(GMP|string|int $num1, GMP|string|int $num2): GMP {}
  * @return array An array of GMP numbers.
  */
 #[Pure]
+#[ArrayShape(["g" => "mixed", "s" => "mixed", "t" => "mixed"])]
 function gmp_gcdext(GMP|string|int $num1, GMP|string|int $num2): array {}
 
 /**
@@ -792,12 +794,17 @@ define('GMP_NATIVE_ENDIAN', 16);
  * The GMP library version
  * @link https://php.net/manual/en/gmp.constants.php
  */
-define('GMP_VERSION', "6.2.1");
+define('GMP_VERSION', "6.3.0");
 
 define('GMP_MPIR_VERSION', '3.0.0');
 
-class GMP implements Serializable
+final class GMP implements Serializable
 {
+    /**
+     * @since 8.2
+     */
+    public function __construct(int|string $num = 0, int $base = 0) {}
+
     /**
      * String representation of object
      * @link https://php.net/manual/en/serializable.serialize.php
@@ -810,12 +817,12 @@ class GMP implements Serializable
     /**
      * Constructs the object
      * @link https://php.net/manual/en/serializable.unserialize.php
-     * @param string $serialized <p>
+     * @param string $data <p>
      * The string representation of the object.
      * </p>
      * @return void
      */
-    public function unserialize($serialized) {}
+    public function unserialize($data) {}
 
     public function __unserialize(array $data): void {}
 }

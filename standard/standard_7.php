@@ -1,5 +1,6 @@
 <?php
 
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use JetBrains\PhpStorm\Internal\PhpStormStubsElementAvailable;
@@ -367,7 +368,7 @@ function getcwd(): string|false {}
  * not specified, the last link opened by opendir
  * is assumed.
  * </p>
- * @return void
+ * @see https://bugs.php.net/bug.php?id=75485
  */
 function rewinddir($dir_handle): void {}
 
@@ -776,6 +777,21 @@ function is_link(string $filename): bool {}
  * In case of error, stat returns false.
  */
 #[Pure(true)]
+#[ArrayShape([
+    "dev" => "int",
+    "ino" => "int",
+    "mode" => "int",
+    "nlink" => "int",
+    "uid" => "int",
+    "gid" => "int",
+    "rdev" => "int",
+    "size" => "int",
+    "atime" => "int",
+    "mtime" => "int",
+    "ctime" => "int",
+    "blksize" => "int",
+    "blocks" => "int"
+])]
 function stat(string $filename): array|false {}
 
 /**
@@ -1176,4 +1192,5 @@ function ezmlm_hash(string $addr): int {}
  * </p>
  * @return bool true on success or false on failure.
  */
-function openlog(string $prefix, int $flags, int $facility): bool {}
+#[LanguageLevelTypeAware(["8.2" => "true"], default: "bool")]
+function openlog(string $prefix, int $flags, int $facility) {}

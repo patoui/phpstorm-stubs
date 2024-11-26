@@ -2,6 +2,7 @@
 
 // Start of mbstring v.
 
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use JetBrains\PhpStorm\Internal\PhpStormStubsElementAvailable;
@@ -169,6 +170,7 @@ function mb_http_output(?string $encoding): string|bool {}
  * When getting the encoding detection order, an ordered array
  * of the encodings is returned.
  */
+#[LanguageLevelTypeAware(['8.2' => 'array|true'], default: 'array|bool')]
 function mb_detect_order(array|string|null $encoding = null): array|bool {}
 
 /**
@@ -777,7 +779,7 @@ function mb_convert_kana(string $string, string $mode = 'KV', ?string $encoding)
  * @return string A converted version of the string represented in ASCII.
  */
 #[Pure]
-function mb_encode_mimeheader(string $string, ?string $charset, ?string $transfer_encoding, string $newline = "\n", int $indent = 0): string {}
+function mb_encode_mimeheader(string $string, ?string $charset, ?string $transfer_encoding, string $newline = "\r\n", int $indent = 0): string {}
 
 /**
  * Decode string in MIME header field
@@ -906,7 +908,23 @@ function mb_send_mail(string $to, string $subject, string $message, array|string
  * is not specified, otherwise a specific type.
  */
 #[Pure]
-function mb_get_info(string $type = 'all'): array|string|int|false {}
+#[ArrayShape([
+    'internal_encoding' => 'string',
+    'http_input' => 'string',
+    'http_output' => 'string',
+    'http_output_conv_mimetypes' => 'string',
+    'mail_charset' => 'string',
+    'mail_header_encoding' => 'string',
+    'mail_body_encoding' => 'string',
+    'illegal_chars' => 'string',
+    'encoding_translation' => 'string',
+    'language' => 'string',
+    'detect_order' => 'string',
+    'substitute_character' => 'string',
+    'strict_detection' => 'string',
+])]
+#[LanguageLevelTypeAware(['8.2' => 'array|string|int|false|null'], default: 'array|string|int|false')]
+function mb_get_info(string $type = 'all') {}
 
 /**
  * Check if the string is valid for the specified encoding
@@ -1073,7 +1091,12 @@ function mb_ereg_replace_callback(string $pattern, callable $callback, string $s
  * @return string|false|null The resultant string or false on error.
  */
 #[Pure]
-function mb_eregi_replace(string $pattern, string $replacement, string $string, ?string $options = null): string|false|null {}
+function mb_eregi_replace(
+    string $pattern,
+    string $replacement,
+    string $string,
+    #[PhpStormStubsElementAvailable(from: '7.0')] ?string $options = null
+): string|false|null {}
 
 /**
  * Split multibyte string using regular expression
@@ -1192,7 +1215,6 @@ function mb_ereg_search_getregs(): array|false {}
  * @return int
  */
 #[Pure]
-#[Deprecated(since: '7.3')]
 function mb_ereg_search_getpos(): int {}
 
 /**
@@ -1255,7 +1277,12 @@ function mbereg_replace($pattern, $replacement, $string, $option) {}
  * @removed 8.0
  */
 #[Deprecated(replacement: "mb_eregi_replace(%parametersList%)", since: "7.3")]
-function mberegi_replace($pattern, $replacement, $string, string $option = "msri"): string {}
+function mberegi_replace(
+    $pattern,
+    $replacement,
+    $string,
+    #[PhpStormStubsElementAvailable(from: '7.0')] string $option = "msri"
+): string {}
 
 /**
  * @param $pattern
@@ -1390,6 +1417,31 @@ function mbereg_search_setpos($position) {}
 function mb_str_split(string $string, int $length = 1, ?string $encoding) {}
 
 /**
+ * @since 8.3
+ */
+function mb_str_pad(string $string, int $length, string $pad_string = " ", int $pad_type = STR_PAD_RIGHT, ?string $encoding = null): string {}
+/**
+ * @since 8.4
+ */
+function mb_ucfirst(string $string, ?string $encoding = null): string {}
+/**
+ * @since 8.4
+ */
+function mb_lcfirst(string $string, ?string $encoding = null): string {}
+/**
+ * @since 8.4
+ */
+function mb_trim(string $string, ?string $characters = null, ?string $encoding = null): string {}
+/**
+ * @since 8.4
+ */
+function mb_ltrim(string $string, ?string $characters = null, ?string $encoding = null): string {}
+/**
+ * @since 8.4
+ */
+function mb_rtrim(string $string, ?string $characters = null, ?string $encoding = null): string {}
+
+/**
  * @removed 8.0
  */
 define('MB_OVERLOAD_MAIL', 1);
@@ -1428,6 +1480,6 @@ define('MB_CASE_FOLD_SIMPLE', 7);
 /**
  * @since 7.4
  */
-define('MB_ONIGURUMA_VERSION', '6.9.7');
+define('MB_ONIGURUMA_VERSION', '6.9.9');
 
 // End of mbstring v.
